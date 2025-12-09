@@ -7,5 +7,5 @@ echo.
 echo Press Ctrl+C to stop the server
 echo.
 
-call venv\Scripts\activate
+call venv\Scripts\activate.bat
 python app.py

@@ -77,8 +77,10 @@ class _ClockInScreenState extends State<ClockInScreen> {
       final result = await ApiService().clockIn(imageFile);
 
       if (mounted) {
-        if (result['success'] == true) {
-          // Success
+        final status = result['status'] ?? 'unknown';
+
+        if (status == 'recognized') {
+          // Success - face recognized
           setState(() {
             _message = result['message'];
           });
@@ -89,15 +91,37 @@ class _ClockInScreenState extends State<ClockInScreen> {
             'Welcome, ${result['name']}!\nTime: ${_formatTimestamp(result['timestamp'])}',
             true,
           );
-        } else {
-          // Failed
+        } else if (status == 'unrecognized') {
+          // Face detected but not recognized
           setState(() {
             _message = result['message'];
           });
 
           _showResultDialog(
             'Clock-In Failed',
-            result['message'] ?? 'Face not recognized',
+            'Face not recognized.\nPlease ensure you are registered in the system.',
+            false,
+          );
+        } else if (status == 'undetected') {
+          // No face detected
+          setState(() {
+            _message = result['message'];
+          });
+
+          _showResultDialog(
+            'Clock-In Failed',
+            'No face detected in image.\nPlease position your face clearly within the frame.',
+            false,
+          );
+        } else {
+          // Unknown error
+          setState(() {
+            _message = result['message'] ?? 'Unknown error';
+          });
+
+          _showResultDialog(
+            'Clock-In Failed',
+            result['message'] ?? 'An error occurred',
             false,
           );
         }

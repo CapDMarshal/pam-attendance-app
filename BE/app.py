@@ -1,19 +1,17 @@
 """
 Face Recognition API Server
-FastAPI server for face recognition using MTCNN and FaceNet
+FastAPI server for face recognition using InsightFace
 """
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import joblib
 import numpy as np
-from keras_facenet import FaceNet
-from mtcnn import MTCNN
 from PIL import Image
 import io
 import logging
-from typing import Optional
+import cv2
+from face_recognition import FaceRecognitionModel
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -22,8 +20,8 @@ logger = logging.getLogger(__name__)
 # Initialize FastAPI app
 app = FastAPI(
     title="Face Recognition API",
-    description="API for face recognition using MTCNN and FaceNet",
-    version="1.0.0"
+    description="API for face recognition using InsightFace",
+    version="2.0.0"
 )
 
 # Configure CORS - allow all origins for development
@@ -35,45 +33,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global variables for models
-detector = None
-embedder = None
-knn_model = None
-
-# Model path
-MODEL_PATH = 'model_wajah_knn.pkl'
+# Global variable for model
+face_model = None
 
 
 @app.on_event("startup")
 async def load_models():
-    """Load face recognition models on startup"""
-    global detector, embedder, knn_model
+    """Load face recognition model on startup"""
+    global face_model
     
     try:
-        logger.info("Loading MTCNN detector...")
-        detector = MTCNN()
+        logger.info("Initializing InsightFace model...")
+        face_model = FaceRecognitionModel()
+        logger.info("Face recognition model loaded successfully!")
         
-        logger.info("Loading FaceNet embedder...")
-        embedder = FaceNet()
-        
-        logger.info(f"Loading KNN model from {MODEL_PATH}...")
-        knn_model = joblib.load(MODEL_PATH)
-        
-        logger.info("All models loaded successfully!")
-        
-    except FileNotFoundError:
-        logger.error(f"Model file not found: {MODEL_PATH}")
-        logger.error("Please ensure model_wajah_knn.pkl is in the project directory")
     except Exception as e:
-        logger.error(f"Error loading models: {str(e)}")
+        logger.error(f"Error loading model: {str(e)}")
 
 
 @app.get("/")
 async def root():
     """Root endpoint"""
     return {
-        "message": "Face Recognition API",
+        "message": "Face Recognition API - InsightFace",
         "status": "running",
+        "version": "2.0.0",
         "docs": "/docs"
     }
 
@@ -81,14 +65,13 @@ async def root():
 @app.get("/api/health")
 async def health_check():
     """Health check endpoint"""
-    models_loaded = all([detector is not None, embedder is not None, knn_model is not None])
+    model_loaded = face_model is not None
+    num_registered = len(face_model.registered_faces) if face_model else 0
     
     return {
-        "status": "healthy" if models_loaded else "unhealthy",
-        "models_loaded": models_loaded,
-        "detector": detector is not None,
-        "embedder": embedder is not None,
-        "knn_model": knn_model is not None
+        "status": "healthy" if model_loaded else "unhealthy",
+        "model_loaded": model_loaded,
+        "registered_faces": num_registered
     }
 
 
@@ -97,17 +80,17 @@ async def recognize_face(file: UploadFile = File(...)):
     """
     Recognize face from uploaded image
     
-    Args:
-        file: Image file (JPEG, PNG)
-        
     Returns:
-        JSON response with recognition result
+        - status: 'recognized', 'unrecognized', or 'undetected'
+        - message: Human-readable message
+        - name: Person's name (if recognized)
+        - confidence: Similarity score
     """
-    # Check if models are loaded
-    if not all([detector, embedder, knn_model]):
+    # Check if model is loaded
+    if face_model is None:
         raise HTTPException(
             status_code=503,
-            detail="Models not loaded. Please check server logs."
+            detail="Model not loaded. Please check server logs."
         )
     
     # Validate file type
@@ -118,7 +101,7 @@ async def recognize_face(file: UploadFile = File(...)):
         )
     
     try:
-        # Read image file
+        # Read and convert image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
         
@@ -126,74 +109,17 @@ async def recognize_face(file: UploadFile = File(...)):
         if image.mode != 'RGB':
             image = image.convert('RGB')
         
-        # Convert to numpy array
+        # Convert to OpenCV format (BGR)
         img_array = np.array(image)
+        img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         
-        # Detect face
-        logger.info("Detecting face...")
-        faces = detector.detect_faces(img_array)
+        # Recognize face
+        result = face_model.recognize(img_bgr)
         
-        if not faces:
-            return JSONResponse(
-                status_code=200,
-                content={
-                    "success": False,
-                    "message": "No face detected in the image",
-                    "name": None,
-                    "confidence": None
-                }
-            )
-        
-        # Get the first detected face
-        face = faces[0]
-        x, y, width, height = face['box']
-        
-        # Ensure coordinates are within image bounds
-        x, y = max(0, x), max(0, y)
-        x2, y2 = min(img_array.shape[1], x + width), min(img_array.shape[0], y + height)
-        
-        # Extract face region
-        face_img = img_array[y:y2, x:x2]
-        
-        # Resize face to 160x160 (required by FaceNet)
-        face_img = Image.fromarray(face_img).resize((160, 160))
-        face_array = np.array(face_img)
-        
-        # Add batch dimension
-        face_array = np.expand_dims(face_array, axis=0)
-        
-        # Get face embedding
-        logger.info("Generating face embedding...")
-        embedding = embedder.embeddings(face_array)
-        
-        # Predict using KNN model
-        logger.info("Predicting identity...")
-        prediction = knn_model.predict(embedding)
-        distances, indices = knn_model.kneighbors(embedding)
-        
-        # Get the predicted name and distance
-        predicted_name = prediction[0]
-        distance = distances[0][0]
-        
-        # Calculate confidence (inverse of distance, normalized)
-        # Lower distance = higher confidence
-        confidence = max(0, 1 - distance)
-        
-        logger.info(f"Prediction: {predicted_name}, Distance: {distance:.4f}, Confidence: {confidence:.4f}")
-        
+        # Return result with success=true for all valid responses
         return {
             "success": True,
-            "message": "Face recognized successfully",
-            "name": predicted_name,
-            "distance": float(distance),
-            "confidence": float(confidence),
-            "face_detected": True,
-            "face_box": {
-                "x": int(x),
-                "y": int(y),
-                "width": int(width),
-                "height": int(height)
-            }
+            **result
         }
         
     except Exception as e:
@@ -208,18 +134,12 @@ async def recognize_face(file: UploadFile = File(...)):
 async def clock_in(file: UploadFile = File(...)):
     """
     Clock-in with face recognition
-    
-    Args:
-        file: Image file (JPEG, PNG)
-        
-    Returns:
-        JSON response with clock-in result
     """
-    # Check if models are loaded
-    if not all([detector, embedder, knn_model]):
+    # Check if model is loaded
+    if face_model is None:
         raise HTTPException(
             status_code=503,
-            detail="Models not loaded. Please check server logs."
+            detail="Model not loaded. Please check server logs."
         )
     
     # Validate file type
@@ -230,106 +150,71 @@ async def clock_in(file: UploadFile = File(...)):
         )
     
     try:
-        # Read image file
+        # Read and convert image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
         
-        # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
         
-        # Convert to numpy array
         img_array = np.array(image)
+        img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         
-        # Detect face
-        logger.info("Detecting face...")
-        faces = detector.detect_faces(img_array)
+        # Recognize face
+        result = face_model.recognize(img_bgr)
         
-        if not faces:
-            return JSONResponse(
-                status_code=200,
-                content={
-                    "success": False,
-                    "message": "No face detected in the image",
-                    "timestamp": None
-                }
-            )
+        # Only proceed if face is recognized
+        if result['status'] == 'recognized':
+            # Record clock-in time
+            from datetime import datetime
+            import json
+            import os
+            
+            timestamp = datetime.now().isoformat()
+            
+            # Load or create attendance records
+            attendance_file = "attendance.json"
+            if os.path.exists(attendance_file):
+                with open(attendance_file, "r") as f:
+                    attendance_data = json.load(f)
+            else:
+                attendance_data = []
+            
+            # Add clock-in record
+            clock_in_record = {
+                "name": result['name'],
+                "type": "clock-in",
+                "timestamp": timestamp,
+                "confidence": result['confidence']
+            }
+            
+            attendance_data.append(clock_in_record)
+            
+            # Save to file
+            with open(attendance_file, "w") as f:
+                json.dump(attendance_data, f, indent=2)
+            
+            logger.info(f"Clock-in recorded for {result['name']} at {timestamp}")
+            
+            return {
+                "success": True,
+                "status": "recognized",
+                "message": f"Clock-in successful for {result['name']}",
+                "name": result['name'],
+                "timestamp": timestamp,
+                "confidence": result['confidence']
+            }
         
-        # Get the first detected face
-        face = faces[0]
-        x, y, width, height = face['box']
-        
-        # Ensure coordinates are within image bounds
-        x, y = max(0, x), max(0, y)
-        x2, y2 = min(img_array.shape[1], x + width), min(img_array.shape[0], y + height)
-        
-        # Extract face region
-        face_img = img_array[y:y2, x:x2]
-        
-        # Resize face to 160x160 (required by FaceNet)
-        face_img = Image.fromarray(face_img).resize((160, 160))
-        face_array = np.array(face_img)
-        
-        # Add batch dimension
-        face_array = np.expand_dims(face_array, axis=0)
-        
-        # Get face embedding
-        logger.info("Generating face embedding...")
-        embedding = embedder.embeddings(face_array)
-        
-        # Predict using KNN model
-        logger.info("Predicting identity...")
-        prediction = knn_model.predict(embedding)
-        distances, indices = knn_model.kneighbors(embedding)
-        
-        # Get the predicted name and distance
-        predicted_name = prediction[0]
-        distance = distances[0][0]
-        
-        # Calculate confidence (inverse of distance, normalized)
-        confidence = max(0, 1 - distance)
-        
-        logger.info(f"Prediction: {predicted_name}, Distance: {distance:.4f}, Confidence: {confidence:.4f}")
-        
-        # Record clock-in time
-        from datetime import datetime
-        import json
-        import os
-        
-        timestamp = datetime.now().isoformat()
-        
-        # Load or create attendance records
-        attendance_file = "attendance.json"
-        if os.path.exists(attendance_file):
-            with open(attendance_file, "r") as f:
-                attendance_data = json.load(f)
         else:
-            attendance_data = []
-        
-        # Add clock-in record
-        clock_in_record = {
-            "name": predicted_name,
-            "type": "clock-in",
-            "timestamp": timestamp,
-            "confidence": float(confidence),
-            "distance": float(distance)
-        }
-        
-        attendance_data.append(clock_in_record)
-        
-        # Save to file
-        with open(attendance_file, "w") as f:
-            json.dump(attendance_data, f, indent=2)
-        
-        logger.info(f"Clock-in recorded for {predicted_name} at {timestamp}")
-        
-        return {
-            "success": True,
-            "message": f"Clock-in successful for {predicted_name}",
-            "name": predicted_name,
-            "timestamp": timestamp,
-            "confidence": float(confidence)
-        }
+            # Face not recognized or not detected
+            return {
+                "success": True,
+                "status": result['status'],
+                "message": result['message'],
+                "name": None,
+                "timestamp": None,
+                "confidence": result.get('confidence', 0)
+            }
         
     except Exception as e:
         logger.error(f"Error processing image: {str(e)}")
@@ -343,18 +228,12 @@ async def clock_in(file: UploadFile = File(...)):
 async def clock_out(file: UploadFile = File(...)):
     """
     Clock-out with face recognition
-    
-    Args:
-        file: Image file (JPEG, PNG)
-        
-    Returns:
-        JSON response with clock-out result
     """
-    # Check if models are loaded
-    if not all([detector, embedder, knn_model]):
+    # Check if model is loaded
+    if face_model is None:
         raise HTTPException(
             status_code=503,
-            detail="Models not loaded. Please check server logs."
+            detail="Model not loaded. Please check server logs."
         )
     
     # Validate file type
@@ -365,106 +244,71 @@ async def clock_out(file: UploadFile = File(...)):
         )
     
     try:
-        # Read image file
+        # Read and convert image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
         
-        # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
         
-        # Convert to numpy array
         img_array = np.array(image)
+        img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         
-        # Detect face
-        logger.info("Detecting face...")
-        faces = detector.detect_faces(img_array)
+        # Recognize face
+        result = face_model.recognize(img_bgr)
         
-        if not faces:
-            return JSONResponse(
-                status_code=200,
-                content={
-                    "success": False,
-                    "message": "No face detected in the image",
-                    "timestamp": None
-                }
-            )
+        # Only proceed if face is recognized
+        if result['status'] == 'recognized':
+            # Record clock-out time
+            from datetime import datetime
+            import json
+            import os
+            
+            timestamp = datetime.now().isoformat()
+            
+            # Load or create attendance records
+            attendance_file = "attendance.json"
+            if os.path.exists(attendance_file):
+                with open(attendance_file, "r") as f:
+                    attendance_data = json.load(f)
+            else:
+                attendance_data = []
+            
+            # Add clock-out record
+            clock_out_record = {
+                "name": result['name'],
+                "type": "clock-out",
+                "timestamp": timestamp,
+                "confidence": result['confidence']
+            }
+            
+            attendance_data.append(clock_out_record)
+            
+            # Save to file
+            with open(attendance_file, "w") as f:
+                json.dump(attendance_data, f, indent=2)
+            
+            logger.info(f"Clock-out recorded for {result['name']} at {timestamp}")
+            
+            return {
+                "success": True,
+                "status": "recognized",
+                "message": f"Clock-out successful for {result['name']}",
+                "name": result['name'],
+                "timestamp": timestamp,
+                "confidence": result['confidence']
+            }
         
-        # Get the first detected face
-        face = faces[0]
-        x, y, width, height = face['box']
-        
-        # Ensure coordinates are within image bounds
-        x, y = max(0, x), max(0, y)
-        x2, y2 = min(img_array.shape[1], x + width), min(img_array.shape[0], y + height)
-        
-        # Extract face region
-        face_img = img_array[y:y2, x:x2]
-        
-        # Resize face to 160x160 (required by FaceNet)
-        face_img = Image.fromarray(face_img).resize((160, 160))
-        face_array = np.array(face_img)
-        
-        # Add batch dimension
-        face_array = np.expand_dims(face_array, axis=0)
-        
-        # Get face embedding
-        logger.info("Generating face embedding...")
-        embedding = embedder.embeddings(face_array)
-        
-        # Predict using KNN model
-        logger.info("Predicting identity...")
-        prediction = knn_model.predict(embedding)
-        distances, indices = knn_model.kneighbors(embedding)
-        
-        # Get the predicted name and distance
-        predicted_name = prediction[0]
-        distance = distances[0][0]
-        
-        # Calculate confidence (inverse of distance, normalized)
-        confidence = max(0, 1 - distance)
-        
-        logger.info(f"Prediction: {predicted_name}, Distance: {distance:.4f}, Confidence: {confidence:.4f}")
-        
-        # Record clock-out time
-        from datetime import datetime
-        import json
-        import os
-        
-        timestamp = datetime.now().isoformat()
-        
-        # Load or create attendance records
-        attendance_file = "attendance.json"
-        if os.path.exists(attendance_file):
-            with open(attendance_file, "r") as f:
-                attendance_data = json.load(f)
         else:
-            attendance_data = []
-        
-        # Add clock-out record
-        clock_out_record = {
-            "name": predicted_name,
-            "type": "clock-out",
-            "timestamp": timestamp,
-            "confidence": float(confidence),
-            "distance": float(distance)
-        }
-        
-        attendance_data.append(clock_out_record)
-        
-        # Save to file
-        with open(attendance_file, "w") as f:
-            json.dump(attendance_data, f, indent=2)
-        
-        logger.info(f"Clock-out recorded for {predicted_name} at {timestamp}")
-        
-        return {
-            "success": True,
-            "message": f"Clock-out successful for {predicted_name}",
-            "name": predicted_name,
-            "timestamp": timestamp,
-            "confidence": float(confidence)
-        }
+            # Face not recognized or not detected
+            return {
+                "success": True,
+                "status": result['status'],
+                "message": result['message'],
+                "name": None,
+                "timestamp": None,
+                "confidence": result.get('confidence', 0)
+            }
         
     except Exception as e:
         logger.error(f"Error processing image: {str(e)}")
@@ -474,17 +318,70 @@ async def clock_out(file: UploadFile = File(...)):
         )
 
 
-@app.get("/api/attendance/{name}")
-async def get_attendance(name: str):
+@app.post("/api/register")
+async def register_face(name: str, file: UploadFile = File(...)):
     """
-    Get attendance records for a specific person
+    Register a new face
     
     Args:
         name: Person's name
-        
-    Returns:
-        JSON response with attendance records
+        file: Image file with clear face
     """
+    if face_model is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Model not loaded"
+        )
+    
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(
+            status_code=400,
+            detail="File must be an image"
+        )
+    
+    try:
+        # Read and convert image
+        contents = await file.read()
+        image = Image.open(io.BytesIO(contents))
+        
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        
+        img_array = np.array(image)
+        img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+        
+        # Register face
+        result = face_model.register_face(img_bgr, name)
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error registering face: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error registering face: {str(e)}"
+        )
+
+
+@app.get("/api/registered-faces")
+async def get_registered_faces():
+    """Get list of registered faces"""
+    if face_model is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Model not loaded"
+        )
+    
+    return {
+        "success": True,
+        "registered_faces": list(face_model.registered_faces.keys()),
+        "count": len(face_model.registered_faces)
+    }
+
+
+@app.get("/api/attendance/{name}")
+async def get_attendance(name: str):
+    """Get attendance records for a specific person"""
     import json
     import os
     

@@ -77,8 +77,10 @@ class _ClockOutScreenState extends State<ClockOutScreen> {
       final result = await ApiService().clockOut(imageFile);
 
       if (mounted) {
-        if (result['success'] == true) {
-          // Success
+        final status = result['status'] ?? 'unknown';
+
+        if (status == 'recognized') {
+          // Success - face recognized
           setState(() {
             _message = result['message'];
           });
@@ -89,15 +91,37 @@ class _ClockOutScreenState extends State<ClockOutScreen> {
             'Goodbye, ${result['name']}!\nTime: ${_formatTimestamp(result['timestamp'])}',
             true,
           );
-        } else {
-          // Failed
+        } else if (status == 'unrecognized') {
+          // Face detected but not recognized
           setState(() {
             _message = result['message'];
           });
 
           _showResultDialog(
             'Clock-Out Failed',
-            result['message'] ?? 'Face not recognized',
+            'Face not recognized.\nPlease ensure you are registered in the system.',
+            false,
+          );
+        } else if (status == 'undetected') {
+          // No face detected
+          setState(() {
+            _message = result['message'];
+          });
+
+          _showResultDialog(
+            'Clock-Out Failed',
+            'No face detected in image.\nPlease position your face clearly within the frame.',
+            false,
+          );
+        } else {
+          // Unknown error
+          setState(() {
+            _message = result['message'] ?? 'Unknown error';
+          });
+
+          _showResultDialog(
+            'Clock-Out Failed',
+            result['message'] ?? 'An error occurred',
             false,
           );
         }

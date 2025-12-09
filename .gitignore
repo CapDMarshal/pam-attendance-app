@@ -1,0 +1,95 @@
+# Python (Backend)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+BE/venv/
+BE/env/
+BE/ENV/
+BE/.venv
+
+# Face Recognition Data (Backend)
+BE/registered_faces/
+BE/face_embeddings.json
+BE/*.pkl
+BE/*.h5
+
+# Attendance Data (Backend)
+BE/attendance.json
+BE/attendance.db
+
+# DeepFace cache
+.deepface/
+
+# Temporary files
+BE/temp_*.jpg
+BE/temp_*.png
+*.tmp
+
+# Flutter/Dart (Frontend)
+FE/.dart_tool/
+FE/.flutter-plugins
+FE/.flutter-plugins-dependencies
+FE/.packages
+FE/.pub-cache/
+FE/.pub/
+FE/build/
+FE/.idea/
+FE/*.iml
+FE/*.ipr
+FE/*.iws
+FE/.vscode/
+
+# Android (Frontend)
+FE/android/.gradle/
+FE/android/captures/
+FE/android/gradle-wrapper.jar
+FE/android/.externalNativeBuild
+FE/android/local.properties
+FE/android/**/GeneratedPluginRegistrant.java
+FE/android/key.properties
+FE/android/app/release/
+
+# iOS (Frontend)
+FE/ios/Flutter/App.framework
+FE/ios/Flutter/Flutter.framework
+FE/ios/Flutter/Flutter.podspec
+FE/ios/Flutter/Generated.xcconfig
+FE/ios/Flutter/app.flx
+FE/ios/Flutter/app.zip
+FE/ios/Flutter/flutter_assets/
+FE/ios/Flutter/flutter_export_environment.sh
+FE/ios/ServiceDefinitions.json
+FE/ios/Runner/GeneratedPluginRegistrant.*
+FE/ios/.symlinks/
+FE/ios/Pods/
+FE/ios/.generated/
+FE/ios/Flutter/ephemeral/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.local
+
+# Model files (optional - uncomment if you don't want to track models)
+# BE/model_wajah_knn.pkl
+# BE/*.onnx
+
+# Datasets file
+datasets

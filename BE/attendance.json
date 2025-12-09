@@ -5,5 +5,78 @@
     "timestamp": "2025-12-08T18:07:40.719803",
     "confidence": 0.07173827051391513,
     "distance": 0.9282617294860849
+  },
+  {
+    "name": "sophia",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T17:57:29.355153",
+    "confidence": 0.1449361217669658,
+    "distance": 0.8550638782330342
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T21:33:39.483696",
+    "confidence": 0.835339
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-out",
+    "timestamp": "2025-12-09T21:44:32.824419",
+    "confidence": 0.8406945
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T22:07:10.395996",
+    "confidence": 0.846557
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T22:08:08.177268",
+    "confidence": 0.8607994999999999
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-out",
+    "timestamp": "2025-12-09T22:09:14.195421",
+    "confidence": 0.855965
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-out",
+    "timestamp": "2025-12-09T22:11:21.772821",
+    "confidence": 0.863572
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T22:12:35.917255",
+    "confidence": 0.8561030000000001
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T22:12:54.507186",
+    "confidence": 0.834709
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T22:15:03.931422",
+    "confidence": 0.8535645000000001
+  },
+  {
+    "name": "Issa",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T22:29:08.278284",
+    "confidence": 0.933075
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T22:29:27.141758",
+    "confidence": 0.8558275
   }
 ]
