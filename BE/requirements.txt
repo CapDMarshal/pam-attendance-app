@@ -1,0 +1,17 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+mtcnn
+keras-facenet
+tensorflow==2.15.1
+opencv-python
+numpy>=1.23.0,<2.0.0
+Pillow
+joblib
+scipy
+scikit-learn==1.3.2
+typing-extensions>=4.6.0
+sqlalchemy>=2.0.0
+apscheduler>=3.10.0
+pytz
+passlib[bcrypt]
