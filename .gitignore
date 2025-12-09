@@ -21,6 +21,7 @@ BE/attendance.db
 
 # DeepFace cache
 .deepface/
+BE/deepface_models/
 
 # Temporary files
 BE/temp_*.jpg
