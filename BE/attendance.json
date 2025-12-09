@@ -78,5 +78,11 @@
     "type": "clock-in",
     "timestamp": "2025-12-09T22:29:27.141758",
     "confidence": 0.8558275
+  },
+  {
+    "name": "Kevin",
+    "type": "clock-in",
+    "timestamp": "2025-12-09T22:39:11.307665",
+    "confidence": 0.804778
   }
 ]
