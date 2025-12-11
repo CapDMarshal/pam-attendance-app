@@ -84,5 +84,41 @@
     "type": "clock-in",
     "timestamp": "2025-12-09T22:39:11.307665",
     "confidence": 0.804778
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-10T22:36:34.668386",
+    "confidence": 0.7443255
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-10T22:52:44.760260",
+    "confidence": 0.8057570000000001
+  },
+  {
+    "name": "Ridho",
+    "type": "clock-in",
+    "timestamp": "2025-12-10T22:53:08.666679",
+    "confidence": 0.7695225
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-11T12:45:58.404486",
+    "confidence": 0.8536779999999999
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-out",
+    "timestamp": "2025-12-11T12:46:22.034993",
+    "confidence": 0.8180035
+  },
+  {
+    "name": "nabil",
+    "type": "clock-in",
+    "timestamp": "2025-12-11T12:46:56.414968",
+    "confidence": 0.7571495
   }
 ]

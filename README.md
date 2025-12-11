@@ -7,6 +7,7 @@ A mobile attendance system using face recognition technology. Built with Flutter
 ## 📋 Table of Contents
 
 - [Requirements](#requirements)
+- [GPU Acceleration](#gpu-acceleration)
 - [Quick Start](#quick-start)
 - [Detailed Setup](#detailed-setup)
 - [Running the Application](#running-the-application)
@@ -24,6 +25,32 @@ A mobile attendance system using face recognition technology. Built with Flutter
 ### Frontend
 - Flutter SDK 3.9.2+
 - Android device or emulator
+
+---
+
+## ⚡ GPU Acceleration (Optional)
+
+To enable **GPU support** (validated on RTX 2050/3050) for faster face recognition (~10x speedup), we use a strictly versioned Conda environment (TensorFlow 2.10).
+
+**📜 Setup Guide**: [GPU_SETUP.md](GPU_SETUP.md)
+
+**🚀 Quick Usage**:
+Always activate the environment before running Backend scripts:
+```powershell
+conda activate pam-gpu
+```
+
+**Running Scripts with GPU:**
+- **Validate Model**:
+  ```powershell
+  cd BE
+  python validate_model.py
+  ```
+- **Run Server**:
+  ```powershell
+  cd BE
+  python app.py
+  ```
 
 ---
 
