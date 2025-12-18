@@ -6,6 +6,7 @@ FastAPI server for face recognition using InsightFace
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 import numpy as np
 from PIL import Image
 import io
@@ -32,6 +33,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount static file directories to serve images
+app.mount("/datasets", StaticFiles(directory="datasets"), name="datasets")
+app.mount("/registered_faces", StaticFiles(directory="registered_faces"), name="registered_faces")
 
 # Global variable for model
 face_model = None
@@ -379,6 +384,198 @@ async def get_registered_faces():
     }
 
 
+
+
+# ============= NEW ENDPOINTS FOR ADMIN AND PORTAL =============
+
+
+@app.get("/api/users")
+async def get_users():
+    """Get all users with their attendance summary"""
+    import json
+    import os
+    from datetime import datetime
+    
+    users_file = "users.json"
+    attendance_file = "attendance.json"
+    
+    if not os.path.exists(users_file):
+        return {"success": False, "message": "Users file not found"}
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    # Get today's attendance if available
+    today = datetime.now().date().isoformat()
+    attendance_data = []
+    
+    if os.path.exists(attendance_file):
+        with open(attendance_file, "r") as f:
+            attendance_data = json.load(f)
+    
+    # Load status overrides
+    statuses_file = "attendance_statuses.json"
+    status_overrides = []
+    if os.path.exists(statuses_file):
+        with open(statuses_file, "r") as f:
+            status_overrides = json.load(f)
+    
+    # Add today's attendance status to each user
+    for user in users:
+        today_attendance = None
+        
+        # First, check if there's a status override for today
+        for override in status_overrides:
+            if override["userId"] == user["id"] and override["date"] == today:
+                today_attendance = override["status"]
+                break
+        
+        # If no override, check clock-in records
+        if today_attendance is None:
+            for record in attendance_data:
+                if record.get("name") == user["name"]:
+                    record_date = record.get("timestamp", "")[:10]
+                    if record_date == today:
+                        today_attendance = "attend"
+                        break
+        
+        # Default to alpha if no attendance found
+        user["todayAbsention"] = today_attendance or "alpha"
+    
+    return {
+        "success": True,
+        "users": users,
+        "count": len(users)
+    }
+
+
+@app.get("/api/users/{user_id}")
+async def get_user(user_id: str):
+    """Get user details by ID"""
+    import json
+    import os
+    
+    users_file = "users.json"
+    
+    if not os.path.exists(users_file):
+        raise HTTPException(status_code=404, detail="Users file not found")
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    user = next((u for u in users if u["id"] == user_id), None)
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {
+        "success": True,
+        "user": user
+    }
+
+
+@app.post("/api/users")
+async def create_user(name: str, phone: str, password: str, faceImage: str = ""):
+    """Create a new user"""
+    import json
+    import os
+    
+    users_file = "users.json"
+    
+    if not os.path.exists(users_file):
+        users = []
+    else:
+        with open(users_file, "r") as f:
+            users = json.load(f)
+    
+    # Generate new user ID
+    max_id = max([int(u["id"]) for u in users], default=0)
+    new_id = str(max_id + 1)
+    
+    new_user = {
+        "id": new_id,
+        "name": name,
+        "phone": phone,
+        "password": password,
+        "faceImage": faceImage or "/images/avatar-placeholder.png"
+    }
+    
+    users.append(new_user)
+    
+    with open(users_file, "w") as f:
+        json.dump(users, f, indent=2)
+    
+    return {
+        "success": True,
+        "message": "User created successfully",
+        "user": new_user
+    }
+
+
+@app.put("/api/users/{user_id}")
+async def update_user(user_id: str, name: str = None, phone: str = None, password: str = None, faceImage: str = None):
+    """Update user information"""
+    import json
+    import os
+    
+    users_file = "users.json"
+    
+    if not os.path.exists(users_file):
+        raise HTTPException(status_code=404, detail="Users file not found")
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    user = next((u for u in users if u["id"] == user_id), None)
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Update fields if provided
+    if name:
+        user["name"] = name
+    if phone:
+        user["phone"] = phone
+    if password:
+        user["password"] = password
+    if faceImage:
+        user["faceImage"] = faceImage
+    
+    with open(users_file, "w") as f:
+        json.dump(users, f, indent=2)
+    
+    return {
+        "success": True,
+        "message": "User updated successfully",
+        "user": user
+    }
+
+
+@app.get("/api/attendance/all")
+async def get_all_attendance():
+    """Get all attendance records"""
+    import json
+    import os
+    
+    attendance_file = "attendance.json"
+    
+    if not os.path.exists(attendance_file):
+        return {
+            "success": True,
+            "records": [],
+            "message": "No attendance records found"
+        }
+    
+    with open(attendance_file, "r") as f:
+        attendance_data = json.load(f)
+    
+    return {
+        "success": True,
+        "records": attendance_data,
+        "total_records": len(attendance_data)
+    }
+
+
 @app.get("/api/attendance/{name}")
 async def get_attendance(name: str):
     """Get attendance records for a specific person"""
@@ -409,6 +606,361 @@ async def get_attendance(name: str):
         "name": name,
         "records": person_records,
         "total_records": len(person_records)
+    }
+
+
+@app.get("/api/attendance/user/{user_id}")
+async def get_user_attendance(user_id: str):
+    """Get attendance records for a specific user by ID"""
+    import json
+    import os
+    
+    users_file = "users.json"
+    attendance_file = "attendance.json"
+    
+    # Get user name from ID
+    if not os.path.exists(users_file):
+        raise HTTPException(status_code=404, detail="Users file not found")
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    user = next((u for u in users if u["id"] == user_id), None)
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if not os.path.exists(attendance_file):
+        return {
+            "success": True,
+            "userId": user_id,
+            "userName": user["name"],
+            "records": [],
+            "message": "No attendance records found"
+        }
+    
+    with open(attendance_file, "r") as f:
+        attendance_data = json.load(f)
+    
+    # Filter records for this user
+    user_records = [
+        record for record in attendance_data 
+        if record.get("name") == user["name"]
+    ]
+    
+    return {
+        "success": True,
+        "userId": user_id,
+        "userName": user["name"],
+        "records": user_records,
+        "total_records": len(user_records)
+    }
+
+
+@app.get("/api/attendance/user/{user_id}/month/{month}")
+async def get_user_attendance_by_month(user_id: str, month: str):
+    """Get attendance records for a specific user and month (format: YYYY-MM)"""
+    import json
+    import os
+    
+    users_file = "users.json"
+    attendance_file = "attendance.json"
+    
+    # Get user name from ID
+    if not os.path.exists(users_file):
+        raise HTTPException(status_code=404, detail="Users file not found")
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    user = next((u for u in users if u["id"] == user_id), None)
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if not os.path.exists(attendance_file):
+        return {
+            "success": True,
+            "userId": user_id,
+            "userName": user["name"],
+            "month": month,
+            "records": [],
+            "message": "No attendance records found"
+        }
+    
+    with open(attendance_file, "r") as f:
+        attendance_data = json.load(f)
+    
+    # Filter records for this user and month
+    user_records = [
+        record for record in attendance_data 
+        if record.get("name") == user["name"] and record.get("timestamp", "").startswith(month)
+    ]
+    
+    return {
+        "success": True,
+        "userId": user_id,
+        "userName": user["name"],
+        "month": month,
+        "records": user_records,
+        "total_records": len(user_records)
+    }
+
+
+@app.get("/api/attendance/status/month/{month}")
+async def get_attendance_with_status(month: str):
+    """Get all attendance with status for a specific month"""
+    import json
+    import os
+    from datetime import datetime, timedelta
+    
+    users_file = "users.json"
+    attendance_file = "attendance.json"
+    statuses_file = "attendance_statuses.json"
+    
+    # Load users
+    if not os.path.exists(users_file):
+        raise HTTPException(status_code=404, detail="Users file not found")
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    # Load attendance
+    attendance_data = []
+    if os.path.exists(attendance_file):
+        with open(attendance_file, "r") as f:
+            attendance_data = json.load(f)
+    
+    # Load status overrides
+    status_overrides = []
+    if os.path.exists(statuses_file):
+        with open(statuses_file, "r") as f:
+            status_overrides = json.load(f)
+    
+    # Parse month
+    year, month_num = map(int, month.split('-'))
+    
+    # Calculate working days in month (Mon-Fri)
+    from calendar import monthrange
+    _, days_in_month = monthrange(year, month_num)
+    
+    working_days = []
+    for day in range(1, days_in_month + 1):
+        date_obj = datetime(year, month_num, day)
+        # 0 = Monday, 6 = Sunday
+        if date_obj.weekday() < 5:  # Mon-Fri
+            working_days.append(date_obj.strftime("%Y-%m-%d"))
+    
+    # Build status records for each user
+    result = []
+    for user in users:
+        user_data = {
+            "userId": user["id"],
+            "userName": user["name"],
+            "days": {}
+        }
+        
+        # Initialize all working days as alpha
+        for date in working_days:
+            user_data["days"][date] = {
+                "status": "alpha",
+                "timestamp": None,
+                "type": None
+            }
+        
+        # Mark clock-in days as attend
+        for record in attendance_data:
+            if record.get("name") == user["name"]:
+                timestamp = record.get("timestamp", "")
+                if timestamp.startswith(month):
+                    date = timestamp[:10]  # YYYY-MM-DD
+                    if date in user_data["days"]:
+                        user_data["days"][date]["status"] = "attend"
+                        user_data["days"][date]["timestamp"] = timestamp
+                        user_data["days"][date]["type"] = record.get("type")
+        
+        # Apply status overrides
+        for override in status_overrides:
+            if override["userId"] == user["id"]:
+                date = override["date"]
+                if date in user_data["days"]:
+                    user_data["days"][date]["status"] = override["status"]
+                    user_data["days"][date]["reason"] = override.get("reason", "")
+        
+        result.append(user_data)
+    
+    return {
+        "success": True,
+        "month": month,
+        "workingDays": working_days,
+        "records": result
+    }
+
+
+@app.get("/api/salary/{user_id}")
+async def get_user_salary(user_id: str):
+    """Get salary information for a user"""
+    import json
+    import os
+    from datetime import datetime
+    
+    salaries_file = "salaries.json"
+    users_file = "users.json"
+    
+    # Get user info
+    if not os.path.exists(users_file):
+        raise HTTPException(status_code=404, detail="Users file not found")
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    user = next((u for u in users if u["id"] == user_id), None)
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if not os.path.exists(salaries_file):
+        return {
+            "success": True,
+            "userId": user_id,
+            "userName": user["name"],
+            "salaries": [],
+            "message": "No salary records found"
+        }
+    
+    with open(salaries_file, "r") as f:
+        salaries = json.load(f)
+    
+    # Filter salaries for this user
+    user_salaries = [
+        salary for salary in salaries 
+        if salary.get("userId") == user_id
+    ]
+    
+    return {
+        "success": True,
+        "userId": user_id,
+        "userName": user["name"],
+        "salaries": user_salaries
+    }
+
+
+@app.get("/api/salary/{user_id}/slip/{month}")
+async def get_salary_slip(user_id: str, month: str):
+    """Get salary slip for a specific user and month (format: YYYY-MM)"""
+    import json
+    import os
+    
+    salaries_file = "salaries.json"
+    users_file = "users.json"
+    
+    # Get user info
+    if not os.path.exists(users_file):
+        raise HTTPException(status_code=404, detail="Users file not found")
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    user = next((u for u in users if u["id"] == user_id), None)
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if not os.path.exists(salaries_file):
+        raise HTTPException(status_code=404, detail="Salary records not found")
+    
+    with open(salaries_file, "r") as f:
+        salaries = json.load(f)
+    
+    # Find salary for this user and month
+    salary = next(
+        (s for s in salaries if s.get("userId") == user_id and s.get("month") == month),
+        None
+    )
+    
+    if not salary:
+        raise HTTPException(status_code=404, detail="Salary slip not found for this month")
+    
+    return {
+        "success": True,
+        "userId": user_id,
+        "userName": user["name"],
+        "month": month,
+        "salary": salary
+    }
+
+
+@app.post("/api/auth/login")
+async def login(phone: str, password: str):
+    """Login endpoint for admin and portal"""
+    import json
+    import os
+    
+    users_file = "users.json"
+    
+    if not os.path.exists(users_file):
+        raise HTTPException(status_code=404, detail="Users file not found")
+    
+    with open(users_file, "r") as f:
+        users = json.load(f)
+    
+    # Find user by phone and password
+    user = next(
+        (u for u in users if u.get("phone") == phone and u.get("password") == password),
+        None
+    )
+    
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid phone or password")
+    
+    # Return user data (excluding password)
+    user_data = {k: v for k, v in user.items() if k != "password"}
+    
+    return {
+        "success": True,
+        "message": "Login successful",
+        "user": user_data
+    }
+
+
+@app.post("/api/attendance/status/update")
+async def update_attendance_status(userId: str, date: str, status: str, reason: str = ""):
+    """Update attendance status for a specific user and date"""
+    import json
+    import os
+    
+    statuses_file = "attendance_statuses.json"
+    
+    # Validate status
+    if status not in ["alpha", "permission", "sick"]:
+        raise HTTPException(status_code=400, detail="Invalid status. Must be alpha, permission, or sick")
+    
+    # Load existing statuses
+    if os.path.exists(statuses_file):
+        with open(statuses_file, "r") as f:
+            statuses = json.load(f)
+    else:
+        statuses = []
+    
+    # Remove existing status for this user/date
+    statuses = [s for s in statuses if not (s["userId"] == userId and s["date"] == date)]
+    
+    # Add new status (only if not attend - attend is determined by clock-in)
+    if status != "attend":
+        statuses.append({
+            "userId": userId,
+            "date": date,
+            "status": status,
+            "reason": reason
+        })
+    
+    # Save statuses
+    with open(statuses_file, "w") as f:
+        json.dump(statuses, f, indent=2)
+    
+    return {
+        "success": True,
+        "message": f"Status updated to {status} for user {userId} on {date}"
     }
 
 

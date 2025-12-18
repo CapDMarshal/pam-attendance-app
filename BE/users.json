@@ -1,0 +1,352 @@
+[
+    {
+        "id": "1",
+        "name": "Debora",
+        "phone": "5221911012",
+        "password": "Debora123",
+        "faceImage": "datasets/new_dataset/5221911012_Debora_10.jpg"
+    },
+    {
+        "id": "2",
+        "name": "Anggun",
+        "phone": "5221911025",
+        "password": "Anggun123",
+        "faceImage": "datasets/new_dataset/5221911025_Anggun_10.jpg"
+    },
+    {
+        "id": "3",
+        "name": "MichaelAndrewDeHaan",
+        "phone": "5231811002",
+        "password": "MichaelAndrewDeHaan123",
+        "faceImage": "datasets/new_dataset/5231811002_MichaelAndrewDeHaan_18.jpg"
+    },
+    {
+        "id": "4",
+        "name": "Hamdanu Fahmi Utomo",
+        "phone": "5231811004",
+        "password": "HamdanuFahmiUtomo123",
+        "faceImage": "datasets/new_dataset/5231811004_Hamdanu Fahmi Utomo_06.jpg"
+    },
+    {
+        "id": "5",
+        "name": "Akhmad Nabil Saputra",
+        "phone": "5231811005",
+        "password": "AkhmadNabilSaputra123",
+        "faceImage": "datasets/new_dataset/5231811005_Akhmad Nabil Saputra_06.jpg"
+    },
+    {
+        "id": "6",
+        "name": "Amalia Dwi Ramadhani",
+        "phone": "5231811007",
+        "password": "AmaliaDwiRamadhani123",
+        "faceImage": "datasets/new_dataset/5231811007_Amalia Dwi Ramadhani_06.jpg"
+    },
+    {
+        "id": "7",
+        "name": "Sophia",
+        "phone": "5231811008",
+        "password": "Sophia123",
+        "faceImage": "datasets/new_dataset/5231811008_Sophia_14.jpg"
+    },
+    {
+        "id": "8",
+        "name": "Otniel Chresto Purwandi",
+        "phone": "5231811009",
+        "password": "OtnielChrestoPurwandi123",
+        "faceImage": "datasets/new_dataset/5231811009_Otniel Chresto Purwandi_14.jpg"
+    },
+    {
+        "id": "9",
+        "name": "MEYLAN ARYANI",
+        "phone": "5231811010",
+        "password": "MEYLANARYANI123",
+        "faceImage": "datasets/new_dataset/5231811010_MEYLAN ARYANI_05.jpg"
+    },
+    {
+        "id": "10",
+        "name": "KusumaRatih",
+        "phone": "5231811013",
+        "password": "KusumaRatih123",
+        "faceImage": "datasets/new_dataset/5231811013_KusumaRatih_12.jpg"
+    },
+    {
+        "id": "11",
+        "name": "Dian Eka Pratiwi",
+        "phone": "5231811014",
+        "password": "DianEkaPratiwi123",
+        "faceImage": "datasets/new_dataset/5231811014_Dian Eka Pratiwi_05.jpg"
+    },
+    {
+        "id": "12",
+        "name": "Fadilah Ratu Azzahra",
+        "phone": "5231811015",
+        "password": "FadilahRatuAzzahra123",
+        "faceImage": "datasets/new_dataset/5231811015_Fadilah Ratu Azzahra_01.jpg"
+    },
+    {
+        "id": "13",
+        "name": "Kesya",
+        "phone": "5231811016",
+        "password": "Kesya123",
+        "faceImage": "datasets/new_dataset/5231811016_Kesya_11.jpg"
+    },
+    {
+        "id": "14",
+        "name": "Maulana Ahmad Muhaimin",
+        "phone": "5231811017",
+        "password": "MaulanaAhmadMuhaimin123",
+        "faceImage": "datasets/new_dataset/5231811017_Maulana Ahmad Muhaimin_10.jpg"
+    },
+    {
+        "id": "15",
+        "name": "Sulis Septiani Putri",
+        "phone": "5231811018",
+        "password": "SulisSeptianiPutri123",
+        "faceImage": "datasets/new_dataset/5231811018_Sulis Septiani Putri_18.jpg"
+    },
+    {
+        "id": "16",
+        "name": "Chronika",
+        "phone": "5231811019",
+        "password": "Chronika123",
+        "faceImage": "datasets/new_dataset/5231811019_Chronika_06.jpg"
+    },
+    {
+        "id": "17",
+        "name": "NASHA SHINTA ABP",
+        "phone": "5231811021",
+        "password": "NASHASHINTAABP123",
+        "faceImage": "datasets/new_dataset/5231811021_NASHA SHINTA ABP_01.jpg"
+    },
+    {
+        "id": "18",
+        "name": "Lathif Ramadhan",
+        "phone": "5231811022",
+        "password": "LathifRamadhan123",
+        "faceImage": "datasets/new_dataset/5231811022_Lathif Ramadhan_02.jpg"
+    },
+    {
+        "id": "19",
+        "name": "Rahma Fieka Januarni",
+        "phone": "5231811023",
+        "password": "RahmaFiekaJanuarni123",
+        "faceImage": "datasets/new_dataset/5231811023_Rahma Fieka Januarni_06.jpg"
+    },
+    {
+        "id": "20",
+        "name": "Maria Febronia Boa",
+        "phone": "5231811024",
+        "password": "MariaFebroniaboa123",
+        "faceImage": "datasets/new_dataset/5231811024_Maria Febronia Boa_06.jpg"
+    },
+    {
+        "id": "21",
+        "name": "Novera",
+        "phone": "5231811025",
+        "password": "Novera123",
+        "faceImage": "datasets/new_dataset/5231811025_Novera_19.jpg"
+    },
+    {
+        "id": "22",
+        "name": "ULFAH NAFIAH",
+        "phone": "5231811026",
+        "password": "ULFAHNAFIAH123",
+        "faceImage": "datasets/new_dataset/5231811026_ULFAH NAFIAH_05.jpg"
+    },
+    {
+        "id": "23",
+        "name": "Naufal",
+        "phone": "5231811027",
+        "password": "Naufal123",
+        "faceImage": "datasets/new_dataset/5231811027_Naufal_35.jpg"
+    },
+    {
+        "id": "24",
+        "name": "Ma_ruf Ndaru Sasono",
+        "phone": "5231811028",
+        "password": "MarufNdaruSasono123",
+        "faceImage": "datasets/new_dataset/5231811028_Ma_ruf Ndaru Sasono_06.jpg"
+    },
+    {
+        "id": "25",
+        "name": "Andini",
+        "phone": "5231811029",
+        "password": "Andini123",
+        "faceImage": "datasets/new_dataset/5231811029_Andini_10.jpg"
+    },
+    {
+        "id": "26",
+        "name": "Antonia Idan Huler",
+        "phone": "5231811030",
+        "password": "AntoniaIdanHuler123",
+        "faceImage": "datasets/new_dataset/5231811030_Antonia Idan Huler_06.jpg"
+    },
+    {
+        "id": "27",
+        "name": "CindyKusumaningrum",
+        "phone": "5231811031",
+        "password": "CindyKusumaningrum123",
+        "faceImage": "datasets/new_dataset/5231811031_CindyKusumaningrum_08.jpg"
+    },
+    {
+        "id": "28",
+        "name": "Rama Panji Nararendra Cahaya",
+        "phone": "5231811033",
+        "password": "RamaPanjiNararendraCahaya123",
+        "faceImage": "datasets/new_dataset/5231811033_Rama Panji Nararendra Cahaya_13.jpg"
+    },
+    {
+        "id": "29",
+        "name": "Shilsylia Putri Devitasary",
+        "phone": "5231811034",
+        "password": "ShilsyliaPutriDevitasary123",
+        "faceImage": "datasets/new_dataset/5231811034_Shilsylia Putri Devitasary_06.jpg"
+    },
+    {
+        "id": "30",
+        "name": "Yogi Hanusanjaya",
+        "phone": "5231811035",
+        "password": "YogiHanusanjaya123",
+        "faceImage": "datasets/new_dataset/5231811035_Yogi Hanusanjaya_06.jpg"
+    },
+    {
+        "id": "31",
+        "name": "Muhammad Ibra Ramadhon",
+        "phone": "5231811037",
+        "password": "MuhammadIbraRamadhon123",
+        "faceImage": "datasets/new_dataset/5231811037_Muhammad Ibra Ramadhon_06.jpg"
+    },
+    {
+        "id": "32",
+        "name": "yudit manda",
+        "phone": "5231811038",
+        "password": "yuditmanda123",
+        "faceImage": "datasets/new_dataset/5231811038_yudit manda_05.jpg"
+    },
+    {
+        "id": "33",
+        "name": "Rambang Widyadana",
+        "phone": "5231811039",
+        "password": "RambangWidyadana123",
+        "faceImage": "datasets/new_dataset/5231811039_Rambang Widyadana_06.jpg"
+    },
+    {
+        "id": "34",
+        "name": "Farma",
+        "phone": "5231911001",
+        "password": "Farma123",
+        "faceImage": "datasets/new_dataset/5231911001_Farma_35.jpg"
+    },
+    {
+        "id": "35",
+        "name": "Desak Gde Devika Anantha Armi",
+        "phone": "5231911002",
+        "password": "DesakGdeDevikaAnanthaArmi123",
+        "faceImage": "datasets/new_dataset/5231911002_Desak Gde Devika Anantha Armi_23.jpg"
+    },
+    {
+        "id": "36",
+        "name": "ulen",
+        "phone": "5231911003",
+        "password": "ulen123",
+        "faceImage": "datasets/new_dataset/5231911003_ulen_10.jpg"
+    },
+    {
+        "id": "37",
+        "name": "Deraya",
+        "phone": "5231911005",
+        "password": "Deraya123",
+        "faceImage": "datasets/new_dataset/5231911005_Deraya_24.jpg"
+    },
+    {
+        "id": "38",
+        "name": "ARI DHARMA DEVANANTA",
+        "phone": "5231911006",
+        "password": "ARIDHARMA DEVANANTA123",
+        "faceImage": "datasets/new_dataset/5231911006_ARI DHARMA DEVANANTA_40.jpg"
+    },
+    {
+        "id": "39",
+        "name": "julia eliza w",
+        "phone": "5231911007",
+        "password": "juliaelizaw123",
+        "faceImage": "datasets/new_dataset/5231911007_julia eliza w_01.jpg"
+    },
+    {
+        "id": "40",
+        "name": "Faren",
+        "phone": "5231911008",
+        "password": "Faren123",
+        "faceImage": "datasets/new_dataset/5231911008_Faren_37.jpg"
+    },
+    {
+        "id": "41",
+        "name": "Ica Nurcahya",
+        "phone": "5231911009",
+        "password": "IcaNurcahya123",
+        "faceImage": "datasets/new_dataset/5231911009_Ica Nurcahya_01.jpg"
+    },
+    {
+        "id": "42",
+        "name": "Jeny Amelindrika Putri",
+        "phone": "5231911010",
+        "password": "JenyAmelindrikaPutri123",
+        "faceImage": "datasets/new_dataset/5231911010_Jeny Amelindrika Putri_01.jpg"
+    },
+    {
+        "id": "43",
+        "name": "Nirmala Fitri Margitaya",
+        "phone": "5231911011",
+        "password": "NirmalaFitriMargitaya123",
+        "faceImage": "datasets/new_dataset/5231911011_Nirmala Fitri Margitaya_02.jpg"
+    },
+    {
+        "id": "44",
+        "name": "Thalita Revalyna Maharani",
+        "phone": "5231911012",
+        "password": "ThalitaRevalynaMaharani123",
+        "faceImage": "datasets/new_dataset/5231911012_Thalita Revalyna Maharani_23.jpg"
+    },
+    {
+        "id": "45",
+        "name": "REVA SEBRINA SALSABILA",
+        "phone": "5231911013",
+        "password": "REVASEBBRINASALSABILA123",
+        "faceImage": "datasets/new_dataset/5231911013_REVA SEBRINA SALSABILA_4.jpg"
+    },
+    {
+        "id": "46",
+        "name": "Asti Eka Rahayu",
+        "phone": "5231911014",
+        "password": "AstiEkaRahayu123",
+        "faceImage": "datasets/new_dataset/5231911014_Asti Eka Rahayu_23.jpg"
+    },
+    {
+        "id": "47",
+        "name": "Ameliawati",
+        "phone": "5231911016",
+        "password": "Ameliawati123",
+        "faceImage": "datasets/new_dataset/5231911016_Ameliawati_22.jpg"
+    },
+    {
+        "id": "48",
+        "name": "RAFI AUFA MIRZA",
+        "phone": "5231911017",
+        "password": "RAFIAUFAMIRZA123",
+        "faceImage": "datasets/new_dataset/5231911017_RAFI AUFA MIRZA_21.jpg"
+    },
+    {
+        "id": "49",
+        "name": "FIRMAN",
+        "phone": "5231911018",
+        "password": "FIRMAN123",
+        "faceImage": "datasets/new_dataset/5231911018_FIRMAN_25.jpg"
+    },
+    {
+        "id": "50",
+        "name": "siti nabila maulidya",
+        "phone": "5231911020",
+        "password": "sitinabilamaulidya123",
+        "faceImage": "datasets/new_dataset/5231911020_siti nabila maulidya_04.jpg"
+    }
+]

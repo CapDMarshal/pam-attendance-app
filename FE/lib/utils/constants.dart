@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 // API Configuration
 class ApiConstants {
-  static final String baseUrl = 'https://9183c15a5514.ngrok-free.app';
+  static final String baseUrl = 'https://292e040d83a1.ngrok-free.app';
   static const String clockInEndpoint = '/api/clock-in';
   static const String clockOutEndpoint = '/api/clock-out';
   static const String recognizeEndpoint = '/api/recognize';

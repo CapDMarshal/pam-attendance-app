@@ -1,124 +1,800 @@
 [
   {
-    "name": "sophia",
+    "name": "Debora",
     "type": "clock-in",
-    "timestamp": "2025-12-08T18:07:40.719803",
-    "confidence": 0.07173827051391513,
-    "distance": 0.9282617294860849
+    "timestamp": "2025-12-16T08:15:23",
+    "confidence": 0.95
   },
   {
-    "name": "sophia",
-    "type": "clock-in",
-    "timestamp": "2025-12-09T17:57:29.355153",
-    "confidence": 0.1449361217669658,
-    "distance": 0.8550638782330342
-  },
-  {
-    "name": "Marshal",
-    "type": "clock-in",
-    "timestamp": "2025-12-09T21:33:39.483696",
-    "confidence": 0.835339
-  },
-  {
-    "name": "Marshal",
+    "name": "Debora",
     "type": "clock-out",
-    "timestamp": "2025-12-09T21:44:32.824419",
-    "confidence": 0.8406945
+    "timestamp": "2025-12-16T17:02:11",
+    "confidence": 0.93
   },
   {
-    "name": "Marshal",
+    "name": "Anggun",
     "type": "clock-in",
-    "timestamp": "2025-12-09T22:07:10.395996",
-    "confidence": 0.846557
+    "timestamp": "2025-12-16T08:05:42",
+    "confidence": 0.97
   },
   {
-    "name": "Marshal",
-    "type": "clock-in",
-    "timestamp": "2025-12-09T22:08:08.177268",
-    "confidence": 0.8607994999999999
-  },
-  {
-    "name": "Marshal",
+    "name": "Anggun",
     "type": "clock-out",
-    "timestamp": "2025-12-09T22:09:14.195421",
-    "confidence": 0.855965
+    "timestamp": "2025-12-16T17:15:33",
+    "confidence": 0.96
   },
   {
-    "name": "Marshal",
+    "name": "MichaelAndrewDeHaan",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:20:15",
+    "confidence": 0.91
+  },
+  {
+    "name": "MichaelAndrewDeHaan",
     "type": "clock-out",
-    "timestamp": "2025-12-09T22:11:21.772821",
-    "confidence": 0.863572
+    "timestamp": "2025-12-16T17:05:47",
+    "confidence": 0.94
   },
   {
-    "name": "Marshal",
+    "name": "Hamdanu Fahmi Utomo",
     "type": "clock-in",
-    "timestamp": "2025-12-09T22:12:35.917255",
-    "confidence": 0.8561030000000001
+    "timestamp": "2025-12-16T08:10:33",
+    "confidence": 0.98
   },
   {
-    "name": "Marshal",
-    "type": "clock-in",
-    "timestamp": "2025-12-09T22:12:54.507186",
-    "confidence": 0.834709
-  },
-  {
-    "name": "Marshal",
-    "type": "clock-in",
-    "timestamp": "2025-12-09T22:15:03.931422",
-    "confidence": 0.8535645000000001
-  },
-  {
-    "name": "Issa",
-    "type": "clock-in",
-    "timestamp": "2025-12-09T22:29:08.278284",
-    "confidence": 0.933075
-  },
-  {
-    "name": "Marshal",
-    "type": "clock-in",
-    "timestamp": "2025-12-09T22:29:27.141758",
-    "confidence": 0.8558275
-  },
-  {
-    "name": "Kevin",
-    "type": "clock-in",
-    "timestamp": "2025-12-09T22:39:11.307665",
-    "confidence": 0.804778
-  },
-  {
-    "name": "Marshal",
-    "type": "clock-in",
-    "timestamp": "2025-12-10T22:36:34.668386",
-    "confidence": 0.7443255
-  },
-  {
-    "name": "Marshal",
-    "type": "clock-in",
-    "timestamp": "2025-12-10T22:52:44.760260",
-    "confidence": 0.8057570000000001
-  },
-  {
-    "name": "Ridho",
-    "type": "clock-in",
-    "timestamp": "2025-12-10T22:53:08.666679",
-    "confidence": 0.7695225
-  },
-  {
-    "name": "Marshal",
-    "type": "clock-in",
-    "timestamp": "2025-12-11T12:45:58.404486",
-    "confidence": 0.8536779999999999
-  },
-  {
-    "name": "Marshal",
+    "name": "Hamdanu Fahmi Utomo",
     "type": "clock-out",
-    "timestamp": "2025-12-11T12:46:22.034993",
-    "confidence": 0.8180035
+    "timestamp": "2025-12-16T17:12:21",
+    "confidence": 0.96
   },
   {
-    "name": "nabil",
+    "name": "Akhmad Nabil Saputra",
     "type": "clock-in",
-    "timestamp": "2025-12-11T12:46:56.414968",
-    "confidence": 0.7571495
+    "timestamp": "2025-12-16T08:08:15",
+    "confidence": 0.94
+  },
+  {
+    "name": "Akhmad Nabil Saputra",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:03:22",
+    "confidence": 0.92
+  },
+  {
+    "name": "Amalia Dwi Ramadhani",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:07:55",
+    "confidence": 0.92
+  },
+  {
+    "name": "Amalia Dwi Ramadhani",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:08:14",
+    "confidence": 0.95
+  },
+  {
+    "name": "Sophia",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:12:44",
+    "confidence": 0.96
+  },
+  {
+    "name": "Sophia",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:19:33",
+    "confidence": 0.94
+  },
+  {
+    "name": "Otniel Chresto Purwandi",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:18:27",
+    "confidence": 0.89
+  },
+  {
+    "name": "Otniel Chresto Purwandi",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:20:45",
+    "confidence": 0.91
+  },
+  {
+    "name": "MEYLAN ARYANI",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:14:52",
+    "confidence": 0.92
+  },
+  {
+    "name": "MEYLAN ARYANI",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:11:18",
+    "confidence": 0.94
+  },
+  {
+    "name": "KusumaRatih",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:22:11",
+    "confidence": 0.90
+  },
+  {
+    "name": "KusumaRatih",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:17:55",
+    "confidence": 0.93
+  },
+  {
+    "name": "Dian Eka Pratiwi",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:09:33",
+    "confidence": 0.97
+  },
+  {
+    "name": "Dian Eka Pratiwi",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:06:44",
+    "confidence": 0.96
+  },
+  {
+    "name": "Fadilah Ratu Azzahra",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:16:22",
+    "confidence": 0.95
+  },
+  {
+    "name": "Fadilah Ratu Azzahra",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:14:11",
+    "confidence": 0.94
+  },
+  {
+    "name": "Kesya",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:11:45",
+    "confidence": 0.93
+  },
+  {
+    "name": "Kesya",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:09:27",
+    "confidence": 0.91
+  },
+  {
+    "name": "Maulana Ahmad Muhaimin",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:19:18",
+    "confidence": 0.88
+  },
+  {
+    "name": "Maulana Ahmad Muhaimin",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:21:33",
+    "confidence": 0.90
+  },
+  {
+    "name": "Sulis Septiani Putri",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:13:55",
+    "confidence": 0.96
+  },
+  {
+    "name": "Sulis Septiani Putri",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:12:44",
+    "confidence": 0.95
+  },
+  {
+    "name": "Chronika",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:06:22",
+    "confidence": 0.94
+  },
+  {
+    "name": "Chronika",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:04:11",
+    "confidence": 0.92
+  },
+  {
+    "name": "NASHA SHINTA ABP",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:21:44",
+    "confidence": 0.91
+  },
+  {
+    "name": "NASHA SHINTA ABP",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:18:22",
+    "confidence": 0.93
+  },
+  {
+    "name": "Lathif Ramadhan",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:17:11",
+    "confidence": 0.89
+  },
+  {
+    "name": "Lathif Ramadhan",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:15:55",
+    "confidence": 0.87
+  },
+  {
+    "name": "Rahma Fieka Januarni",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:10:55",
+    "confidence": 0.96
+  },
+  {
+    "name": "Rahma Fieka Januarni",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:08:33",
+    "confidence": 0.94
+  },
+  {
+    "name": "Maria Febronia Boa",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:14:22",
+    "confidence": 0.92
+  },
+  {
+    "name": "Maria Febronia Boa",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:11:44",
+    "confidence": 0.90
+  },
+  {
+    "name": "Novera",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:23:11",
+    "confidence": 0.95
+  },
+  {
+    "name": "Novera",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:19:55",
+    "confidence": 0.93
+  },
+  {
+    "name": "ULFAH NAFIAH",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:18:44",
+    "confidence": 0.91
+  },
+  {
+    "name": "ULFAH NAFIAH",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:16:22",
+    "confidence": 0.89
+  },
+  {
+    "name": "Naufal",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:15:33",
+    "confidence": 0.94
+  },
+  {
+    "name": "Naufal",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:13:11",
+    "confidence": 0.92
+  },
+  {
+    "name": "Ma_ruf Ndaru Sasono",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:07:22",
+    "confidence": 0.97
+  },
+  {
+    "name": "Ma_ruf Ndaru Sasono",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:05:44",
+    "confidence": 0.95
+  },
+  {
+    "name": "Andini",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:20:55",
+    "confidence": 0.90
+  },
+  {
+    "name": "Andini",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:17:22",
+    "confidence": 0.88
+  },
+  {
+    "name": "Antonia Idan Huler",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:12:11",
+    "confidence": 0.93
+  },
+  {
+    "name": "Antonia Idan Huler",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:09:55",
+    "confidence": 0.91
+  },
+  {
+    "name": "CindyKusumaningrum",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:16:44",
+    "confidence": 0.96
+  },
+  {
+    "name": "CindyKusumaningrum",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:14:33",
+    "confidence": 0.94
+  },
+  {
+    "name": "Rama Panji Nararendra Cahaya",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:09:11",
+    "confidence": 0.95
+  },
+  {
+    "name": "Rama Panji Nararendra Cahaya",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:07:22",
+    "confidence": 0.93
+  },
+  {
+    "name": "Shilsylia Putri Devitasary",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:22:55",
+    "confidence": 0.89
+  },
+  {
+    "name": "Shilsylia Putri Devitasary",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:20:11",
+    "confidence": 0.87
+  },
+  {
+    "name": "Yogi Hanusanjaya",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:13:22",
+    "confidence": 0.92
+  },
+  {
+    "name": "Yogi Hanusanjaya",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:10:44",
+    "confidence": 0.90
+  },
+  {
+    "name": "Muhammad Ibra Ramadhon",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:19:44",
+    "confidence": 0.94
+  },
+  {
+    "name": "Muhammad Ibra Ramadhon",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:16:55",
+    "confidence": 0.92
+  },
+  {
+    "name": "yudit manda",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:08:33",
+    "confidence": 0.97
+  },
+  {
+    "name": "yudit manda",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:06:11",
+    "confidence": 0.95
+  },
+  {
+    "name": "Rambang Widyadana",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:17:55",
+    "confidence": 0.91
+  },
+  {
+    "name": "Rambang Widyadana",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:15:22",
+    "confidence": 0.89
+  },
+  {
+    "name": "Farma",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:11:11",
+    "confidence": 0.96
+  },
+  {
+    "name": "Farma",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:08:44",
+    "confidence": 0.94
+  },
+  {
+    "name": "Desak Gde Devika Anantha Armi",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:14:44",
+    "confidence": 0.93
+  },
+  {
+    "name": "Desak Gde Devika Anantha Armi",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:12:11",
+    "confidence": 0.91
+  },
+  {
+    "name": "ulen",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:21:22",
+    "confidence": 0.90
+  },
+  {
+    "name": "ulen",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:18:55",
+    "confidence": 0.88
+  },
+  {
+    "name": "Deraya",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:06:44",
+    "confidence": 0.95
+  },
+  {
+    "name": "Deraya",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:04:22",
+    "confidence": 0.93
+  },
+  {
+    "name": "ARI DHARMA DEVANANTA",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:10:11",
+    "confidence": 0.94
+  },
+  {
+    "name": "ARI DHARMA DEVANANTA",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:07:44",
+    "confidence": 0.92
+  },
+  {
+    "name": "julia eliza w",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:23:44",
+    "confidence": 0.89
+  },
+  {
+    "name": "julia eliza w",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:21:11",
+    "confidence": 0.87
+  },
+  {
+    "name": "Faren",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:15:55",
+    "confidence": 0.92
+  },
+  {
+    "name": "Faren",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:13:22",
+    "confidence": 0.90
+  },
+  {
+    "name": "Ica Nurcahya",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:18:11",
+    "confidence": 0.96
+  },
+  {
+    "name": "Ica Nurcahya",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:15:44",
+    "confidence": 0.94
+  },
+  {
+    "name": "Jeny Amelindrika Putri",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:09:44",
+    "confidence": 0.93
+  },
+  {
+    "name": "Jeny Amelindrika Putri",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:07:11",
+    "confidence": 0.91
+  },
+  {
+    "name": "Nirmala Fitri Margitaya",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:12:22",
+    "confidence": 0.95
+  },
+  {
+    "name": "Nirmala Fitri Margitaya",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:09:44",
+    "confidence": 0.93
+  },
+  {
+    "name": "Thalita Revalyna Maharani",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:21:55",
+    "confidence": 0.90
+  },
+  {
+    "name": "Thalita Revalyna Maharani",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:19:11",
+    "confidence": 0.88
+  },
+  {
+    "name": "REVA SEBRINA SALSABILA",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:07:11",
+    "confidence": 0.97
+  },
+  {
+    "name": "REVA SEBRINA SALSABILA",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:05:22",
+    "confidence": 0.95
+  },
+  {
+    "name": "Asti Eka Rahayu",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:16:33",
+    "confidence": 0.94
+  },
+  {
+    "name": "Asti Eka Rahayu",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:14:55",
+    "confidence": 0.92
+  },
+  {
+    "name": "Ameliawati",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:22:44",
+    "confidence": 0.91
+  },
+  {
+    "name": "Ameliawati",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:20:22",
+    "confidence": 0.89
+  },
+  {
+    "name": "RAFI AUFA MIRZA",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:13:44",
+    "confidence": 0.96
+  },
+  {
+    "name": "RAFI AUFA MIRZA",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:11:11",
+    "confidence": 0.94
+  },
+  {
+    "name": "FIRMAN",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:20:22",
+    "confidence": 0.93
+  },
+  {
+    "name": "FIRMAN",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:17:44",
+    "confidence": 0.91
+  },
+  {
+    "name": "siti nabila maulidya",
+    "type": "clock-in",
+    "timestamp": "2025-12-16T08:03:19",
+    "confidence": 0.99
+  },
+  {
+    "name": "siti nabila maulidya",
+    "type": "clock-out",
+    "timestamp": "2025-12-16T17:06:37",
+    "confidence": 0.98
+  },
+  {
+    "name": "Debora",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:08:45",
+    "confidence": 0.96
+  },
+  {
+    "name": "Debora",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:01:33",
+    "confidence": 0.94
+  },
+  {
+    "name": "Anggun",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:11:22",
+    "confidence": 0.95
+  },
+  {
+    "name": "Anggun",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:09:47",
+    "confidence": 0.97
+  },
+  {
+    "name": "MichaelAndrewDeHaan",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:25:13",
+    "confidence": 0.88
+  },
+  {
+    "name": "MichaelAndrewDeHaan",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:22:55",
+    "confidence": 0.90
+  },
+  {
+    "name": "Hamdanu Fahmi Utomo",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:06:38",
+    "confidence": 0.97
+  },
+  {
+    "name": "Hamdanu Fahmi Utomo",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:14:21",
+    "confidence": 0.95
+  },
+  {
+    "name": "Akhmad Nabil Saputra",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:09:22",
+    "confidence": 0.93
+  },
+  {
+    "name": "Akhmad Nabil Saputra",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:06:55",
+    "confidence": 0.91
+  },
+  {
+    "name": "Amalia Dwi Ramadhani",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:13:41",
+    "confidence": 0.93
+  },
+  {
+    "name": "Amalia Dwi Ramadhani",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:07:29",
+    "confidence": 0.96
+  },
+  {
+    "name": "Sophia",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:16:22",
+    "confidence": 0.94
+  },
+  {
+    "name": "Sophia",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:14:11",
+    "confidence": 0.92
+  },
+  {
+    "name": "Otniel Chresto Purwandi",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:19:55",
+    "confidence": 0.91
+  },
+  {
+    "name": "Otniel Chresto Purwandi",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:16:42",
+    "confidence": 0.89
+  },
+  {
+    "name": "MEYLAN ARYANI",
+    "type": "clock-in",
+    "timestamp": "2025-12-17T08:21:37",
+    "confidence": 0.90
+  },
+  {
+    "name": "MEYLAN ARYANI",
+    "type": "clock-out",
+    "timestamp": "2025-12-17T17:13:44",
+    "confidence": 0.92
+  },
+  {
+    "name": "Debora",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:12:19",
+    "confidence": 0.94
+  },
+  {
+    "name": "Anggun",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:07:33",
+    "confidence": 0.96
+  },
+  {
+    "name": "MichaelAndrewDeHaan",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:23:47",
+    "confidence": 0.87
+  },
+  {
+    "name": "Hamdanu Fahmi Utomo",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:05:22",
+    "confidence": 0.99
+  },
+  {
+    "name": "Akhmad Nabil Saputra",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:11:44",
+    "confidence": 0.92
+  },
+  {
+    "name": "Amalia Dwi Ramadhani",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:15:58",
+    "confidence": 0.91
+  },
+  {
+    "name": "Sophia",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:18:22",
+    "confidence": 0.93
+  },
+  {
+    "name": "Otniel Chresto Purwandi",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:17:34",
+    "confidence": 0.93
+  },
+  {
+    "name": "MEYLAN ARYANI",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:14:07",
+    "confidence": 0.89
+  },
+  {
+    "name": "KusumaRatih",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:20:55",
+    "confidence": 0.90
+  },
+  {
+    "name": "Dian Eka Pratiwi",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:09:11",
+    "confidence": 0.96
+  },
+  {
+    "name": "Fadilah Ratu Azzahra",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:16:44",
+    "confidence": 0.94
+  },
+  {
+    "name": "Kesya",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:12:33",
+    "confidence": 0.92
+  },
+  {
+    "name": "FIRMAN",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:19:42",
+    "confidence": 0.95
+  },
+  {
+    "name": "siti nabila maulidya",
+    "type": "clock-in",
+    "timestamp": "2025-12-18T08:02:28",
+    "confidence": 0.98
   }
 ]

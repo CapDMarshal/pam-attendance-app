@@ -1,0 +1,14 @@
+[
+  {
+    "userId": "1",
+    "date": "2025-12-19",
+    "status": "permission",
+    "reason": ""
+  },
+  {
+    "userId": "2",
+    "date": "2025-12-19",
+    "status": "sick",
+    "reason": ""
+  }
+]

@@ -1,0 +1,402 @@
+[
+    {
+        "userId": "1",
+        "month": "2025-12",
+        "basicSalary": 5200000,
+        "allowances": 1100000,
+        "deductions": 520000,
+        "netSalary": 5780000
+    },
+    {
+        "userId": "2",
+        "month": "2025-12",
+        "basicSalary": 4800000,
+        "allowances": 950000,
+        "deductions": 480000,
+        "netSalary": 5270000
+    },
+    {
+        "userId": "3",
+        "month": "2025-12",
+        "basicSalary": 5500000,
+        "allowances": 1200000,
+        "deductions": 550000,
+        "netSalary": 6150000
+    },
+    {
+        "userId": "4",
+        "month": "2025-12",
+        "basicSalary": 5000000,
+        "allowances": 1000000,
+        "deductions": 500000,
+        "netSalary": 5500000
+    },
+    {
+        "userId": "5",
+        "month": "2025-12",
+        "basicSalary": 4600000,
+        "allowances": 850000,
+        "deductions": 460000,
+        "netSalary": 4990000
+    },
+    {
+        "userId": "6",
+        "month": "2025-12",
+        "basicSalary": 5300000,
+        "allowances": 1150000,
+        "deductions": 530000,
+        "netSalary": 5920000
+    },
+    {
+        "userId": "7",
+        "month": "2025-12",
+        "basicSalary": 4900000,
+        "allowances": 920000,
+        "deductions": 490000,
+        "netSalary": 5330000
+    },
+    {
+        "userId": "8",
+        "month": "2025-12",
+        "basicSalary": 5100000,
+        "allowances": 1050000,
+        "deductions": 510000,
+        "netSalary": 5640000
+    },
+    {
+        "userId": "9",
+        "month": "2025-12",
+        "basicSalary": 4700000,
+        "allowances": 880000,
+        "deductions": 470000,
+        "netSalary": 5110000
+    },
+    {
+        "userId": "10",
+        "month": "2025-12",
+        "basicSalary": 5400000,
+        "allowances": 1180000,
+        "deductions": 540000,
+        "netSalary": 6040000
+    },
+    {
+        "userId": "11",
+        "month": "2025-12",
+        "basicSalary": 5600000,
+        "allowances": 1250000,
+        "deductions": 560000,
+        "netSalary": 6290000
+    },
+    {
+        "userId": "12",
+        "month": "2025-12",
+        "basicSalary": 4500000,
+        "allowances": 800000,
+        "deductions": 450000,
+        "netSalary": 4850000
+    },
+    {
+        "userId": "13",
+        "month": "2025-12",
+        "basicSalary": 5200000,
+        "allowances": 1100000,
+        "deductions": 520000,
+        "netSalary": 5780000
+    },
+    {
+        "userId": "14",
+        "month": "2025-12",
+        "basicSalary": 4800000,
+        "allowances": 950000,
+        "deductions": 480000,
+        "netSalary": 5270000
+    },
+    {
+        "userId": "15",
+        "month": "2025-12",
+        "basicSalary": 5000000,
+        "allowances": 1000000,
+        "deductions": 500000,
+        "netSalary": 5500000
+    },
+    {
+        "userId": "16",
+        "month": "2025-12",
+        "basicSalary": 4700000,
+        "allowances": 880000,
+        "deductions": 470000,
+        "netSalary": 5110000
+    },
+    {
+        "userId": "17",
+        "month": "2025-12",
+        "basicSalary": 5300000,
+        "allowances": 1150000,
+        "deductions": 530000,
+        "netSalary": 5920000
+    },
+    {
+        "userId": "18",
+        "month": "2025-12",
+        "basicSalary": 4900000,
+        "allowances": 920000,
+        "deductions": 490000,
+        "netSalary": 5330000
+    },
+    {
+        "userId": "19",
+        "month": "2025-12",
+        "basicSalary": 5100000,
+        "allowances": 1050000,
+        "deductions": 510000,
+        "netSalary": 5640000
+    },
+    {
+        "userId": "20",
+        "month": "2025-12",
+        "basicSalary": 5400000,
+        "allowances": 1180000,
+        "deductions": 540000,
+        "netSalary": 6040000
+    },
+    {
+        "userId": "21",
+        "month": "2025-12",
+        "basicSalary": 4600000,
+        "allowances": 850000,
+        "deductions": 460000,
+        "netSalary": 4990000
+    },
+    {
+        "userId": "22",
+        "month": "2025-12",
+        "basicSalary": 5500000,
+        "allowances": 1200000,
+        "deductions": 550000,
+        "netSalary": 6150000
+    },
+    {
+        "userId": "23",
+        "month": "2025-12",
+        "basicSalary": 4800000,
+        "allowances": 950000,
+        "deductions": 480000,
+        "netSalary": 5270000
+    },
+    {
+        "userId": "24",
+        "month": "2025-12",
+        "basicSalary": 5200000,
+        "allowances": 1100000,
+        "deductions": 520000,
+        "netSalary": 5780000
+    },
+    {
+        "userId": "25",
+        "month": "2025-12",
+        "basicSalary": 4700000,
+        "allowances": 880000,
+        "deductions": 470000,
+        "netSalary": 5110000
+    },
+    {
+        "userId": "26",
+        "month": "2025-12",
+        "basicSalary": 5000000,
+        "allowances": 1000000,
+        "deductions": 500000,
+        "netSalary": 5500000
+    },
+    {
+        "userId": "27",
+        "month": "2025-12",
+        "basicSalary": 5300000,
+        "allowances": 1150000,
+        "deductions": 530000,
+        "netSalary": 5920000
+    },
+    {
+        "userId": "28",
+        "month": "2025-12",
+        "basicSalary": 4900000,
+        "allowances": 920000,
+        "deductions": 490000,
+        "netSalary": 5330000
+    },
+    {
+        "userId": "29",
+        "month": "2025-12",
+        "basicSalary": 5100000,
+        "allowances": 1050000,
+        "deductions": 510000,
+        "netSalary": 5640000
+    },
+    {
+        "userId": "30",
+        "month": "2025-12",
+        "basicSalary": 5400000,
+        "allowances": 1180000,
+        "deductions": 540000,
+        "netSalary": 6040000
+    },
+    {
+        "userId": "31",
+        "month": "2025-12",
+        "basicSalary": 4600000,
+        "allowances": 850000,
+        "deductions": 460000,
+        "netSalary": 4990000
+    },
+    {
+        "userId": "32",
+        "month": "2025-12",
+        "basicSalary": 5500000,
+        "allowances": 1200000,
+        "deductions": 550000,
+        "netSalary": 6150000
+    },
+    {
+        "userId": "33",
+        "month": "2025-12",
+        "basicSalary": 4800000,
+        "allowances": 950000,
+        "deductions": 480000,
+        "netSalary": 5270000
+    },
+    {
+        "userId": "34",
+        "month": "2025-12",
+        "basicSalary": 5200000,
+        "allowances": 1100000,
+        "deductions": 520000,
+        "netSalary": 5780000
+    },
+    {
+        "userId": "35",
+        "month": "2025-12",
+        "basicSalary": 5000000,
+        "allowances": 1000000,
+        "deductions": 500000,
+        "netSalary": 5500000
+    },
+    {
+        "userId": "36",
+        "month": "2025-12",
+        "basicSalary": 4700000,
+        "allowances": 880000,
+        "deductions": 470000,
+        "netSalary": 5110000
+    },
+    {
+        "userId": "37",
+        "month": "2025-12",
+        "basicSalary": 5300000,
+        "allowances": 1150000,
+        "deductions": 530000,
+        "netSalary": 5920000
+    },
+    {
+        "userId": "38",
+        "month": "2025-12",
+        "basicSalary": 4900000,
+        "allowances": 920000,
+        "deductions": 490000,
+        "netSalary": 5330000
+    },
+    {
+        "userId": "39",
+        "month": "2025-12",
+        "basicSalary": 5100000,
+        "allowances": 1050000,
+        "deductions": 510000,
+        "netSalary": 5640000
+    },
+    {
+        "userId": "40",
+        "month": "2025-12",
+        "basicSalary": 5400000,
+        "allowances": 1180000,
+        "deductions": 540000,
+        "netSalary": 6040000
+    },
+    {
+        "userId": "41",
+        "month": "2025-12",
+        "basicSalary": 4600000,
+        "allowances": 850000,
+        "deductions": 460000,
+        "netSalary": 4990000
+    },
+    {
+        "userId": "42",
+        "month": "2025-12",
+        "basicSalary": 5500000,
+        "allowances": 1200000,
+        "deductions": 550000,
+        "netSalary": 6150000
+    },
+    {
+        "userId": "43",
+        "month": "2025-12",
+        "basicSalary": 4800000,
+        "allowances": 950000,
+        "deductions": 480000,
+        "netSalary": 5270000
+    },
+    {
+        "userId": "44",
+        "month": "2025-12",
+        "basicSalary": 5200000,
+        "allowances": 1100000,
+        "deductions": 520000,
+        "netSalary": 5780000
+    },
+    {
+        "userId": "45",
+        "month": "2025-12",
+        "basicSalary": 5000000,
+        "allowances": 1000000,
+        "deductions": 500000,
+        "netSalary": 5500000
+    },
+    {
+        "userId": "46",
+        "month": "2025-12",
+        "basicSalary": 4700000,
+        "allowances": 880000,
+        "deductions": 470000,
+        "netSalary": 5110000
+    },
+    {
+        "userId": "47",
+        "month": "2025-12",
+        "basicSalary": 5300000,
+        "allowances": 1150000,
+        "deductions": 530000,
+        "netSalary": 5920000
+    },
+    {
+        "userId": "48",
+        "month": "2025-12",
+        "basicSalary": 4900000,
+        "allowances": 920000,
+        "deductions": 490000,
+        "netSalary": 5330000
+    },
+    {
+        "userId": "49",
+        "month": "2025-12",
+        "basicSalary": 5100000,
+        "allowances": 1050000,
+        "deductions": 510000,
+        "netSalary": 5640000
+    },
+    {
+        "userId": "50",
+        "month": "2025-12",
+        "basicSalary": 5400000,
+        "allowances": 1180000,
+        "deductions": 540000,
+        "netSalary": 6040000
+    }
+]
