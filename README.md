@@ -1,373 +1,251 @@
-# Face Recognition Attendance System
+# PAM Attendance System
 
-A mobile attendance system using face recognition technology. Built with Flutter (frontend) and Python FastAPI (backend).
+A comprehensive face recognition-based attendance system with mobile app, web admin panel, and employee portal.
 
----
+## � Project Components
 
-## 📋 Table of Contents
+### 1. Backend (`BE/`)
+FastAPI-based backend with face recognition capabilities using MTCNN and FaceNet.
 
-- [Requirements](#requirements)
-- [GPU Acceleration](#gpu-acceleration)
-- [Quick Start](#quick-start)
-- [Detailed Setup](#detailed-setup)
-- [Running the Application](#running-the-application)
-- [Configuration](#configuration)
-- [Troubleshooting](#troubleshooting)
+**Features:**
+- Face recognition for clock-in/clock-out
+- User management
+- Attendance tracking with status management
+- Salary slip generation
+- RESTful API endpoints
 
----
+**Tech Stack:**
+- Python 3.x
+- FastAPI
+- TensorFlow
+- MTCNN & FaceNet
+- OpenCV
 
-## Requirements
+### 2. Mobile App (`FE/`)
+Flutter mobile application for employee attendance.
 
-### Backend
-- Python 3.8+ installed
-- ngrok account (free) for mobile access
+**Features:**
+- Face recognition-based clock-in/out
+- Real-time attendance tracking
+- User-friendly interface
 
-### Frontend
-- Flutter SDK 3.9.2+
-- Android device or emulator
+**Tech Stack:**
+- Flutter/Dart
+- Camera integration
+- HTTP requests
 
----
+### 3. Admin Panel (`pam-admin/`)
+Next.js web application for administrators.
 
-## ⚡ GPU Acceleration (Optional)
+**Features:**
+- User management (add, edit, view)
+- Attendance reports (Laporan Absensi)
+- Salary slip management (Slip Gaji)
+- Status management (attend/alpha/permission/sick)
+- Dashboard with attendance overview
 
-To enable **GPU support** (validated on RTX 2050/3050) for faster face recognition (~10x speedup), we use a strictly versioned Conda environment (TensorFlow 2.10).
+**Tech Stack:**
+- Next.js 16
+- TypeScript
+- Tailwind CSS
+- React
 
-**📜 Setup Guide**: [GPU_SETUP.md](GPU_SETUP.md)
+### 4. Employee Portal (`portal_karyawan/`)
+Flutter web application for employees to view their records.
 
-**🚀 Quick Usage**:
-Always activate the environment before running Backend scripts:
-```powershell
-conda activate pam-gpu
-```
+**Features:**
+- View attendance history
+- Download salary slips
+- Monthly attendance reports
 
-**Running Scripts with GPU:**
-- **Validate Model**:
-  ```powershell
-  cd BE
-  python validate_model.py
-  ```
-- **Run Server**:
-  ```powershell
-  cd BE
-  python app.py
-  ```
+**Tech Stack:**
+- Flutter Web
+- Dart
 
----
+## 📋 Prerequisites
 
-## Quick Start
+- **Python 3.8+** for backend
+- **Node.js 18+** or **Bun** for pam-admin
+- **Flutter SDK** for FE and portal_karyawan
+- **Git**
 
-### 1️⃣ ngrok Setup (One-Time)
+## 🛠️ Installation
 
-ngrok is required to expose your local backend to your mobile device.
-
-1. **Create Account**: Go to [ngrok.com](https://ngrok.com/) and sign up (free)
-2. **Download**: Download ngrok from [ngrok.com/download](https://ngrok.com/download)
-3. **Extract**: Place `ngrok.exe` in `D:\ngrok\` folder
-4. **Authenticate**: 
-   ```bash
-   D:\ngrok\ngrok.exe authtoken YOUR_AUTH_TOKEN
-   ```
-   Get your auth token from: https://dashboard.ngrok.com/get-started/your-authtoken
-
-### 2️⃣ Backend Setup (One-Time)
+### Backend Setup
 
 ```bash
 cd BE
-complete_setup.bat
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-This will automatically:
-- Check if ngrok is installed
-- Create Python virtual environment
-- Install all required packages
+### Admin Panel Setup
 
-### 3️⃣ Frontend Setup (One-Time)
+```bash
+cd pam-admin
+bun install  # or npm install
+```
+
+### Employee Portal Setup
+
+```bash
+cd portal_karyawan
+flutter pub get
+```
+
+### Mobile App Setup
 
 ```bash
 cd FE
 flutter pub get
 ```
 
-### 4️⃣ Run the Application
+## ▶️ Running the Applications
 
-**Terminal 1 - Start Backend:**
+### Start Backend
+
 ```bash
 cd BE
-run_all.bat
+./run_all.bat  # Starts FastAPI server and ngrok tunnel
 ```
 
-This opens **two windows**:
-- **Server window**: Shows API logs
-- **ngrok window**: Shows the public URL
+Backend will run on `http://localhost:5000`
 
-**Important**: Look for the ngrok URL in the ngrok window. It looks like:
-```
-Forwarding    https://xxxx-xx-xx-xx-xx.ngrok-free.app -> http://localhost:5000
-```
+### Start Admin Panel
 
-**Terminal 2 - Update Flutter Config:**
-
-Open `FE/lib/utils/constants.dart` and update the `baseUrl`:
-```dart
-static const String baseUrl = 'https://xxxx-xx-xx-xx-xx.ngrok-free.app';
+```bash
+cd pam-admin
+bun run dev  # or npm run dev
 ```
 
-**Terminal 3 - Start Frontend:**
+Admin panel will run on `http://localhost:3000`
+
+### Start Employee Portal
+
+```bash
+cd portal_karyawan
+flutter run -d chrome  # For web
+```
+
+### Run Mobile App
+
 ```bash
 cd FE
 flutter run
 ```
 
----
+## 🔑 API Endpoints
 
-## Detailed Setup
+### Authentication
+- `POST /api/auth/login` - User login
 
-### Backend Files Overview
+### Users
+- `GET /api/users` - Get all users
+- `GET /api/users/{user_id}` - Get user by ID
+- `POST /api/users` - Create new user
+- `PUT /api/users/{user_id}` - Update user
 
-- `complete_setup.bat` - One-time setup script
-- `run_all.bat` - Runs server + ngrok together
-- `start_server.bat` - Runs only the server (manual mode)
-- `ngrok_setup.bat` - Runs only ngrok (manual mode)
-- `app.py` - Main FastAPI application
-- `requirements.txt` - Python dependencies
+### Attendance
+- `POST /api/clock-in` - Clock in with face recognition
+- `POST /api/clock-out` - Clock out with face recognition
+- `GET /api/attendance/all` - Get all attendance records
+- `GET /api/attendance/user/{user_id}` - Get user attendance
+- `GET /api/attendance/user/{user_id}/month/{month}` - Get monthly attendance
+- `GET /api/attendance/status/month/{month}` - Get attendance with status calculation
+- `POST /api/attendance/status/update` - Update attendance status
 
-### Frontend Structure
+### Salary
+- `GET /api/salary/{user_id}` - Get user salary info
+- `GET /api/salary/{user_id}/slip/{month}` - Get salary slip by month
 
-```
-FE/
-├── lib/
-│   ├── screens/          # App screens (dashboard, clock-in, clock-out)
-│   ├── services/         # API communication
-│   ├── widgets/          # Reusable components
-│   └── utils/            # Constants and config
-└── assets/               # Images and resources
-```
+### Face Recognition
+- `POST /api/recognize` - Recognize face from image
+- `POST /api/register` - Register new face
+- `GET /api/registered-faces` - Get all registered faces
 
----
-
-## Running the Application
-
-### Option 1: Quick Run (Recommended)
-
-```bash
-# Terminal 1
-cd BE
-run_all.bat
-
-# Terminal 2
-cd FE
-flutter run
-```
-
-### Option 2: Manual Control
-
-If you want to run backend and ngrok separately:
-
-```bash
-# Terminal 1 - Backend
-cd BE
-start_server.bat
-
-# Terminal 2 - ngrok
-cd BE
-ngrok_setup.bat
-
-# Terminal 3 - Frontend
-cd FE
-flutter run
-```
-
----
-
-## Configuration
-
-### Update ngrok URL in Flutter
-
-Every time ngrok restarts, it generates a **new URL**. You must update it in the Flutter app:
-
-1. Check the ngrok window for the current URL
-2. Open `FE/lib/utils/constants.dart`
-3. Update the `baseUrl`:
-   ```dart
-   static const String baseUrl = 'https://YOUR-NEW-NGROK-URL.ngrok-free.app';
-   ```
-4. Hot restart the Flutter app (press `R` in terminal)
-
-### For Local Testing (Emulator Only)
-
-If testing on an Android emulator (not physical device):
-
-```dart
-// In FE/lib/utils/constants.dart
-static const String baseUrl = 'http://10.0.2.2:5000';
-```
-
----
-
-## Features
-
-✅ Face recognition using MTCNN and FaceNet  
-✅ Clock-in and Clock-out tracking  
-✅ JSON-based attendance storage  
-✅ Real-time camera capture  
-✅ Modern Flutter UI  
-✅ RESTful API with automatic documentation  
-
----
-
-## API Endpoints
-
-Visit `http://localhost:5000/docs` when the server is running to see interactive API documentation.
-
-**Main Endpoints:**
-- `POST /api/clock-in` - Clock in with face photo
-- `POST /api/clock-out` - Clock out with face photo
-- `GET /api/attendance/{name}` - Get attendance records
-- `POST /api/recognize` - Recognize face only
-
----
-
-## Troubleshooting
-
-### ❌ "ngrok not found" error
-
-**Solution**: Make sure `ngrok.exe` is in `D:\ngrok\` or update the path in `complete_setup.bat` and `run_all.bat`
-
-### ❌ Flutter can't connect to backend
-
-**Check these:**
-1. ✅ Is the server running? (Check Terminal 1)
-2. ✅ Is ngrok running? (Check Terminal 2)
-3. ✅ Did you update the ngrok URL in `constants.dart`?
-4. ✅ Did you hot restart Flutter? (Press `R` in terminal)
-
-### ❌ "No face detected" error
-
-**Solutions:**
-- Ensure good lighting
-- Face the camera directly
-- Make sure face is clearly visible
-- Try moving closer to the camera
-
-### ❌ ngrok URL expired
-
-ngrok free tier URLs expire after 2 hours. When this happens:
-1. Close ngrok window
-2. Run `run_all.bat` again (or just `ngrok_setup.bat`)
-3. Copy the **new** ngrok URL
-4. Update `constants.dart`
-5. Hot restart Flutter app
-
-### ❌ Port 5000 already in use
-
-**Solution**:
-```bash
-# Windows - Find and kill process on port 5000
-netstat -ano | findstr :5000
-taskkill /PID <PID_NUMBER> /F
-```
-
-### ❌ Virtual environment errors
-
-**Solution**: Delete `venv` folder and run setup again:
-```bash
-cd BE
-rmdir /s venv
-complete_setup.bat
-```
-
----
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 PAM-FINAL/
-├── BE/                          # Backend
-│   ├── app.py                   # Main FastAPI app
-│   ├── requirements.txt         # Python packages
-│   ├── model_wajah_knn.pkl     # Trained face recognition model
-│   ├── attendance.json         # Attendance data
-│   ├── complete_setup.bat      # One-time setup
-│   └── run_all.bat             # Run server + ngrok
-│
-├── FE/                          # Frontend
+├── BE/                          # FastAPI Backend
+│   ├── app.py                   # Main application
+│   ├── users.json               # User database
+│   ├── attendance.json          # Attendance records
+│   ├── attendance_statuses.json # Status overrides
+│   ├── salaries.json            # Salary data
+│   └── datasets/                # Face recognition datasets
+├── FE/                          # Flutter Mobile App
 │   ├── lib/
-│   │   ├── screens/            # App pages
-│   │   ├── services/           # API calls
-│   │   ├── widgets/            # UI components
-│   │   └── utils/              # Config (constants.dart)
-│   ├── assets/                 # Images
-│   └── pubspec.yaml            # Flutter config
-│
-└── README.md                    # This file
+│   └── android/
+├── pam-admin/                   # Next.js Admin Panel
+│   ├── app/
+│   ├── components/
+│   └── lib/
+└── portal_karyawan/            # Flutter Web Employee Portal
+    └── lib/
 ```
 
----
+## 🎯 Features
 
-## Development Tips
+### Admin Panel Features
+- **Dashboard**: Overview of all users with today's attendance status
+- **User Management**: Add, edit, and manage user accounts
+- **Laporan Absensi**: 
+  - Monthly attendance reports
+  - Status breakdown (attend/alpha/permission/sick)
+  - Edit individual day status via modal
+  - Working days calculation (Mon-Fri)
+- **Slip Gaji**: Monthly salary slip generation and viewing
+- **Alter Absention**: Quick status change for today's attendance
 
-### Backend Development
+### Attendance Status System
+- **attend**: User clocked in (from face recognition)
+- **alpha**: Absent (default for working days without clock-in)
+- **permission**: Excused absence (set by admin)
+- **sick**: Sick leave (set by admin)
 
-**View Logs**: Check the server window for logs
+Status priority:
+1. Admin manual overrides (permission/sick)
+2. Clock-in records (attend)
+3. Default (alpha)
 
-**Test API**: Use the Swagger UI at `http://localhost:5000/docs`
+## 🔒 Default Admin Credentials
 
-**Stop Server**: Close the server window or press `Ctrl+C`
+**Admin Panel:**
+- Username: `admin`
+- Password: `admin`
 
-### Frontend Development
+## 📱 Mobile App Configuration
 
-**Hot Reload**: Press `r` in Flutter terminal (for UI changes)
+Update the ngrok URL in `FE/lib/utils/constants.dart` after starting the backend:
 
-**Hot Restart**: Press `R` in Flutter terminal (for logic changes)
+```dart
+class ApiConstants {
+  static const String baseUrl = 'YOUR_NGROK_URL';
+}
+```
 
-**Stop App**: Press `q` in Flutter terminal
+## 🤝 Contributing
 
-**Check Flutter**: Run `flutter doctor` to verify setup
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
----
+## 📄 License
 
-## Summary - Complete Workflow
+This project is licensed under the MIT License.
 
-1. **First Time Setup** (Once):
-   ```bash
-   # Setup ngrok account and authentication
-   # Then run:
-   cd BE
-   complete_setup.bat
-   
-   cd ../FE
-   flutter pub get
-   ```
+## 👥 Authors
 
-2. **Every Time You Run** (Always):
-   ```bash
-   # Terminal 1
-   cd BE
-   run_all.bat
-   
-   # Copy ngrok URL from ngrok window
-   # Update FE/lib/utils/constants.dart
-   
-   # Terminal 2
-   cd FE
-   flutter run
-   ```
+- **Your Name** - Initial work
 
-3. **When ngrok URL Changes** (Every 2 hours or after restart):
-   - Copy new ngrok URL
-   - Update `constants.dart`
-   - Press `R` in Flutter terminal
+## 🙏 Acknowledgments
 
----
-
-## Support
-
-**Backend Issues**: Check server window logs and `http://localhost:5000/docs`
-
-**Frontend Issues**: Run `flutter doctor` and check console errors
-
-**ngrok Issues**: Verify authentication and check ngrok dashboard
-
----
-
-Made with ❤️ for attendance management
+- MTCNN for face detection
+- FaceNet for face recognition
+- FastAPI for backend framework
+- Next.js for admin panel
+- Flutter for mobile and web applications
