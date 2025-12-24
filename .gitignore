@@ -8,6 +8,7 @@ BE/venv/
 BE/env/
 BE/ENV/
 BE/.venv
+BE/archived
 
 # Face Recognition Data (Backend)
 BE/registered_faces/
@@ -144,3 +145,5 @@ app.*.map.json
 portal_karyawan/android/app/debug
 portal_karyawan/android/app/profile
 portal_karyawan/android/app/release
+
+dataset_backup.zip

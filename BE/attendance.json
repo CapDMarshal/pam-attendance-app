@@ -111,7 +111,7 @@
     "name": "KusumaRatih",
     "type": "clock-in",
     "timestamp": "2025-12-16T08:22:11",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "KusumaRatih",
@@ -165,7 +165,7 @@
     "name": "Maulana Ahmad Muhaimin",
     "type": "clock-out",
     "timestamp": "2025-12-16T17:21:33",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "Sulis Septiani Putri",
@@ -237,7 +237,7 @@
     "name": "Maria Febronia Boa",
     "type": "clock-out",
     "timestamp": "2025-12-16T17:11:44",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "Novera",
@@ -291,7 +291,7 @@
     "name": "Andini",
     "type": "clock-in",
     "timestamp": "2025-12-16T08:20:55",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "Andini",
@@ -357,7 +357,7 @@
     "name": "Yogi Hanusanjaya",
     "type": "clock-out",
     "timestamp": "2025-12-16T17:10:44",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "Muhammad Ibra Ramadhon",
@@ -423,7 +423,7 @@
     "name": "ulen",
     "type": "clock-in",
     "timestamp": "2025-12-16T08:21:22",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "ulen",
@@ -477,7 +477,7 @@
     "name": "Faren",
     "type": "clock-out",
     "timestamp": "2025-12-16T17:13:22",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "Ica Nurcahya",
@@ -519,7 +519,7 @@
     "name": "Thalita Revalyna Maharani",
     "type": "clock-in",
     "timestamp": "2025-12-16T08:21:55",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "Thalita Revalyna Maharani",
@@ -633,7 +633,7 @@
     "name": "MichaelAndrewDeHaan",
     "type": "clock-out",
     "timestamp": "2025-12-17T17:22:55",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "Hamdanu Fahmi Utomo",
@@ -699,7 +699,7 @@
     "name": "MEYLAN ARYANI",
     "type": "clock-in",
     "timestamp": "2025-12-17T08:21:37",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "MEYLAN ARYANI",
@@ -765,7 +765,7 @@
     "name": "KusumaRatih",
     "type": "clock-in",
     "timestamp": "2025-12-18T08:20:55",
-    "confidence": 0.90
+    "confidence": 0.9
   },
   {
     "name": "Dian Eka Pratiwi",
@@ -796,5 +796,89 @@
     "type": "clock-in",
     "timestamp": "2025-12-18T08:02:28",
     "confidence": 0.98
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T04:42:00.185905",
+    "confidence": 0.8020275
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:09:30.114702",
+    "confidence": 1.0
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:10:58.717743",
+    "confidence": 0.9571214914321899
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:18:53.832498",
+    "confidence": 0.9309289455413818
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:19:02.975517",
+    "confidence": 0.9086337089538574
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:20:36.241380",
+    "confidence": 0.8999013900756836
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:22:31.994617",
+    "confidence": 0.9288285970687866
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:23:32.889642",
+    "confidence": 0.939443051815033
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:24:13.740941",
+    "confidence": 0.9195163249969482
+  },
+  {
+    "name": "Ridho",
+    "type": "clock-in",
+    "timestamp": "2025-12-24T05:24:23.020078",
+    "confidence": 0.7756532430648804
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-25T02:46:54.195960",
+    "confidence": 0.8553455471992493
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-25T03:00:30.610234",
+    "confidence": 0.8716301918029785
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-out",
+    "timestamp": "2025-12-25T03:00:35.310054",
+    "confidence": 0.8600565195083618
+  },
+  {
+    "name": "Marshal",
+    "type": "clock-in",
+    "timestamp": "2025-12-25T03:01:25.031181",
+    "confidence": 0.908257782459259
   }
 ]

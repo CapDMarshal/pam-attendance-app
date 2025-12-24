@@ -193,7 +193,7 @@ export default function DashboardPage() {
                           className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 hover:ring-2 hover:ring-blue-500 transition cursor-pointer"
                         >
                           <Image
-                            src={`http://localhost:5000/${user.faceImage}`}
+                            src={`https://hypocycloidal-intensely-raven.ngrok-free.dev/${user.faceImage}`}
                             alt={`${user.name}'s face`}
                             width={40}
                             height={40}
@@ -400,7 +400,7 @@ export default function DashboardPage() {
               </div>
               <div className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden">
                 <Image
-                  src={`http://localhost:5000/${selectedImage.src}`}
+                  src={`https://hypocycloidal-intensely-raven.ngrok-free.dev/${selectedImage.src}`}
                   alt={`${selectedImage.name}'s face`}
                   fill
                   className="object-contain"

@@ -37,8 +37,10 @@ class _ClockInScreenState extends State<ClockInScreen> {
 
         _cameraController = CameraController(
           frontCamera,
-          ResolutionPreset.medium,
+          ResolutionPreset
+              .high, // Changed from medium to high for better recognition
           enableAudio: false,
+          imageFormatGroup: ImageFormatGroup.jpeg, // Ensure JPEG format
         );
 
         await _cameraController!.initialize();
@@ -69,9 +71,14 @@ class _ClockInScreenState extends State<ClockInScreen> {
     });
 
     try {
-      // Capture image
+      // Capture image with higher quality
       final image = await _cameraController!.takePicture();
       final File imageFile = File(image.path);
+
+      // Debug: Check file size
+      final fileSize = await imageFile.length();
+      print('📸 Image captured: ${image.path}');
+      print('📸 File size: ${(fileSize / 1024).toStringAsFixed(2)} KB');
 
       // Call API
       final result = await ApiService().clockIn(imageFile);
@@ -114,14 +121,17 @@ class _ClockInScreenState extends State<ClockInScreen> {
             false,
           );
         } else {
-          // Unknown error
+          // Unknown error or status
+          print('⚠️ Unknown status received: $status');
+          print('⚠️ Full API result: $result');
+
           setState(() {
             _message = result['message'] ?? 'Unknown error';
           });
 
           _showResultDialog(
             'Clock-In Failed',
-            result['message'] ?? 'An error occurred',
+            result['message'] ?? 'An error occurred. Please check the logs.',
             false,
           );
         }

@@ -37,8 +37,10 @@ class _ClockOutScreenState extends State<ClockOutScreen> {
 
         _cameraController = CameraController(
           frontCamera,
-          ResolutionPreset.medium,
+          ResolutionPreset
+              .high, // Changed from medium to high for better recognition
           enableAudio: false,
+          imageFormatGroup: ImageFormatGroup.jpeg, // Ensure JPEG format
         );
 
         await _cameraController!.initialize();

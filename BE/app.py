@@ -1,6 +1,6 @@
 """
 Face Recognition API Server
-FastAPI server for face recognition using InsightFace
+FastAPI server for face recognition using FaceNet with OpenCV optimizations
 """
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -12,7 +12,7 @@ from PIL import Image
 import io
 import logging
 import cv2
-from face_recognition import FaceRecognitionModel
+from facenet_model import FaceNetRecognitionModel
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__)
 # Initialize FastAPI app
 app = FastAPI(
     title="Face Recognition API",
-    description="API for face recognition using InsightFace",
-    version="2.0.0"
+    description="API for face recognition using FaceNet with OpenCV optimizations",
+    version="3.0.0"
 )
 
 # Configure CORS - allow all origins for development
@@ -48,8 +48,8 @@ async def load_models():
     global face_model
     
     try:
-        logger.info("Initializing InsightFace model...")
-        face_model = FaceRecognitionModel()
+        logger.info("Initializing FaceNet model with OpenCV optimizations...")
+        face_model = FaceNetRecognitionModel()
         logger.info("Face recognition model loaded successfully!")
         
     except Exception as e:
@@ -60,9 +60,9 @@ async def load_models():
 async def root():
     """Root endpoint"""
     return {
-        "message": "Face Recognition API - InsightFace",
+        "message": "Face Recognition API - FaceNet",
         "status": "running",
-        "version": "2.0.0",
+        "version": "3.0.0",
         "docs": "/docs"
     }
 
@@ -110,6 +110,24 @@ async def recognize_face(file: UploadFile = File(...)):
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
         
+        # Log image info from upload
+        logger.info(f"=== RECOGNIZE REQUEST ===")
+        logger.info(f"📁 File: {file.filename}")
+        logger.info(f"📦 Content type: {file.content_type}")
+        logger.info(f"📏 File size: {len(contents) / 1024:.2f} KB")
+        logger.info(f"📐 Image mode: {image.mode}")
+        logger.info(f"📐 Image size (before EXIF): {image.size}")
+        
+        # FIX: Apply EXIF orientation to handle portrait/landscape correctly
+        from PIL import ImageOps
+        try:
+            # This automatically rotates the image based on EXIF orientation tag
+            image = ImageOps.exif_transpose(image)
+            logger.info(f"✅ EXIF orientation applied")
+            logger.info(f"📐 Image size (after EXIF): {image.size}")
+        except Exception as e:
+            logger.warning(f"⚠️ Could not apply EXIF orientation: {e}")
+        
         # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
@@ -118,8 +136,17 @@ async def recognize_face(file: UploadFile = File(...)):
         img_array = np.array(image)
         img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         
+        logger.info(f"🖼️ NumPy array shape: {img_array.shape}")
+        logger.info(f"🎨 Mean pixel value (BGR): {img_bgr.mean(axis=(0,1))}")
+        
         # Recognize face
         result = face_model.recognize(img_bgr)
+        
+        logger.info(f"📊 Recognition result:")
+        logger.info(f"  Status: {result['status']}")
+        logger.info(f"  Confidence: {result.get('confidence', 0):.4f}")
+        logger.info(f"  Name: {result.get('name', 'None')}")
+        logger.info(f"=========================")
         
         # Return result with success=true for all valid responses
         return {
@@ -158,6 +185,13 @@ async def clock_in(file: UploadFile = File(...)):
         # Read and convert image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
+        
+        # Apply EXIF orientation (portrait/landscape fix)
+        from PIL import ImageOps
+        try:
+            image = ImageOps.exif_transpose(image)
+        except:
+            pass  # If no EXIF data, continue
         
         if image.mode != 'RGB':
             image = image.convert('RGB')
@@ -252,6 +286,13 @@ async def clock_out(file: UploadFile = File(...)):
         # Read and convert image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
+        
+        # Apply EXIF orientation (portrait/landscape fix)
+        from PIL import ImageOps
+        try:
+            image = ImageOps.exif_transpose(image)
+        except:
+            pass  # If no EXIF data, continue
         
         if image.mode != 'RGB':
             image = image.convert('RGB')
@@ -348,6 +389,13 @@ async def register_face(name: str, file: UploadFile = File(...)):
         # Read and convert image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
+        
+        # Apply EXIF orientation (portrait/landscape fix)
+        from PIL import ImageOps
+        try:
+            image = ImageOps.exif_transpose(image)
+        except:
+            pass  # If no EXIF data, continue
         
         if image.mode != 'RGB':
             image = image.convert('RGB')

@@ -1,6 +1,7 @@
 class ApiConstants {
   // TODO: Replace with your backend URL (use environment variable in production)
-  static const String baseUrl = 'http://localhost:5000';
+  static const String baseUrl =
+      'https://hypocycloidal-intensely-raven.ngrok-free.dev';
 
   // Endpoints
   static const String usersEndpoint = '/api/users';

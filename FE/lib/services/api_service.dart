@@ -17,9 +17,14 @@ class ApiService {
         '${ApiConstants.baseUrl}${ApiConstants.clockInEndpoint}',
       );
 
+      print('🔵 Clock-in request to: $uri');
+      print('🔵 Image file: ${imageFile.path}');
+
       var request = http.MultipartRequest('POST', uri);
       // Add ngrok bypass header
       request.headers['ngrok-skip-browser-warning'] = 'true';
+      request.headers['User-Agent'] = 'PAM-Attendance-App';
+
       request.files.add(
         await http.MultipartFile.fromPath(
           'file',
@@ -28,19 +33,45 @@ class ApiService {
         ),
       );
 
+      print('🔵 Sending request...');
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
 
+      print('🔵 Status Code: ${response.statusCode}');
+      print('🔵 Response Body: $responseBody');
+
       if (response.statusCode == 200) {
-        return json.decode(responseBody);
+        final decodedResponse = json.decode(responseBody);
+        print('✅ Decoded response: $decodedResponse');
+        return decodedResponse;
       } else {
-        return {
-          'success': false,
-          'message': 'Failed to clock in. Status: ${response.statusCode}',
-        };
+        print('❌ Error response: $responseBody');
+        // Try to parse error response
+        try {
+          final errorResponse = json.decode(responseBody);
+          return {
+            'success': false,
+            'status': 'error',
+            'message':
+                errorResponse['message'] ??
+                'Failed to clock in. Status: ${response.statusCode}',
+          };
+        } catch (e) {
+          return {
+            'success': false,
+            'status': 'error',
+            'message':
+                'Failed to clock in. Status: ${response.statusCode}\nResponse: $responseBody',
+          };
+        }
       }
     } catch (e) {
-      return {'success': false, 'message': 'Error: ${e.toString()}'};
+      print('❌ Exception in clockIn: $e');
+      return {
+        'success': false,
+        'status': 'error',
+        'message': 'Error: ${e.toString()}',
+      };
     }
   }
 

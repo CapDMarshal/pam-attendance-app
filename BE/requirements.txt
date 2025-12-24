@@ -1,9 +1,12 @@
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 python-multipart==0.0.6
-deepface
 opencv-python
+opencv-contrib-python
 numpy>=1.23.0,<2.0.0
 Pillow
-tf-keras
+tensorflow>=2.13.0
+keras-facenet
+scikit-learn
+mtcnn
 
