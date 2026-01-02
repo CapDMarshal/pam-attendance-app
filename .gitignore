@@ -15,9 +15,13 @@ BE/registered_faces/
 BE/face_embeddings.json
 BE/*.pkl
 BE/*.h5
+BE/datasets
+
+dataset_backup
 
 # Attendance Data (Backend)
 BE/attendance.db
+BE/venv_linux
 
 # DeepFace cache
 .deepface/

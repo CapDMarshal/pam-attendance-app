@@ -1,0 +1,87 @@
+2025-12-29 21:03:02,486 - 
+============================================================
+2025-12-29 21:03:02,486 - VALIDATION RESULTS
+2025-12-29 21:03:02,486 - ============================================================
+2025-12-29 21:03:02,500 - Accuracy: 0.9473 (94.73%)
+2025-12-29 21:03:02,519 - F1 Score (Weighted): 0.9475
+2025-12-29 21:03:02,538 - F1 Score (Macro): 0.9292
+2025-12-29 21:03:02,538 - Average Confidence: 0.8394
+2025-12-29 21:03:02,539 - ============================================================
+2025-12-29 21:03:02,539 - 
+Detailed Classification Report:
+2025-12-29 21:03:02,583 - 
+                               precision    recall  f1-score   support
+
+         ARI DHARMA DEVANANTA       0.90      0.97      0.94        39
+         Akhmad Nabil Saputra       0.97      0.85      0.91        40
+         Amalia Dwi Ramadhani       1.00      1.00      1.00        40
+                   Ameliawati       0.87      1.00      0.93        40
+                       Andini       1.00      1.00      1.00        56
+                       Anggun       0.91      1.00      0.95        40
+           Antonia Idan Huler       0.96      1.00      0.98        24
+              Asti Eka Rahayu       0.93      1.00      0.96        40
+                     Chronika       0.81      0.95      0.87        40
+           CindyKusumaningrum       0.98      1.00      0.99        40
+                       Debora       1.00      0.95      0.97        40
+                       Deraya       0.74      1.00      0.85        40
+Desak Gde Devika Anantha Armi       1.00      0.93      0.96        40
+             Dian Eka Pratiwi       0.97      0.95      0.96        40
+                       FIRMAN       0.97      0.88      0.92        40
+         Fadilah Ratu Azzahra       1.00      0.79      0.88        56
+                        Faren       0.98      1.00      0.99        40
+                        Farma       1.00      0.93      0.96        40
+   Glory Valentio Duska Putra       1.00      1.00      1.00        40
+          Hamdanu Fahmi Utomo       0.97      0.93      0.95        40
+                 Ica Nurcahya       0.97      0.97      0.97        40
+       Jeny Amelindrika Putri       0.98      1.00      0.99        40
+                        Kesya       1.00      0.78      0.88        37
+                  KusumaRatih       0.92      0.85      0.88        40
+              Lathif Ramadhan       1.00      0.97      0.99        40
+                MEYLAN ARYANI       0.97      0.93      0.95        40
+           Maria Febronia Boa       1.00      1.00      1.00        40
+       Maulana Ahmad Muhaimin       1.00      1.00      1.00        40
+          MichaelAndrewDeHaan       0.97      0.95      0.96        39
+       Muhammad Ibra Ramadhon       1.00      1.00      1.00        40
+             NASHA SHINTA ABP       0.89      0.80      0.84        40
+                       Naufal       1.00      0.82      0.90        40
+      Nirmala Fitri Margitaya       0.89      1.00      0.94        40
+                       Novera       1.00      1.00      1.00        40
+      Otniel Chresto Purwandi       1.00      1.00      1.00        40
+              RAFI AUFA MIRZA       1.00      0.95      0.97        40
+       REVA SEBRINA SALSABILA       0.97      0.90      0.94        40
+         Rahma Fieka Januarni       0.91      0.80      0.85        40
+ Rama Panji Nararendra Cahaya       0.80      1.00      0.89        40
+            Rambang Widyadana       0.97      0.97      0.97        40
+   Shilsylia Putri Devitasary       0.87      1.00      0.93        40
+                       Sophia       1.00      1.00      1.00        40
+         Sulis Septiani Putri       0.86      0.90      0.88        40
+    Thalita Revalyna Maharani       1.00      0.88      0.93        40
+                 ULFAH NAFIAH       1.00      1.00      1.00        40
+                      Unknown       0.00      0.00      0.00         0
+             Yogi Hanusanjaya       0.91      1.00      0.95        40
+                julia eliza w       0.95      1.00      0.97        39
+         siti nabila maulidya       0.84      0.95      0.89        40
+                         ulen       0.95      0.88      0.91        40
+                  yudit manda       1.00      1.00      1.00        40
+
+                     accuracy                           0.95      2010
+                    macro avg       0.93      0.93      0.93      2010
+                 weighted avg       0.95      0.95      0.95      2010
+
+2025-12-29 21:03:04,470 - 
+Confusion matrix saved to /media/capdmarshal/Data/Coding/PAM-FINAL/BE/confusion_matrix_facenet.png
+2025-12-29 21:03:04,470 - 
+Test Statistics:
+2025-12-29 21:03:04,470 - Total test samples: 2010
+2025-12-29 21:03:04,470 - Known classes: 50
+2025-12-29 21:03:04,470 - Training samples: 51
+2025-12-29 21:03:04,471 - 
+============================================================
+2025-12-29 21:03:04,471 - FINAL SUMMARY
+2025-12-29 21:03:04,471 - ============================================================
+2025-12-29 21:03:04,472 - ✅ Accuracy: 94.73%
+2025-12-29 21:03:04,472 - ✅ F1 Score (Weighted): 0.9475
+2025-12-29 21:03:04,472 - ✅ F1 Score (Macro): 0.9292
+2025-12-29 21:03:04,472 - ✅ Average Confidence: 0.8394
+2025-12-29 21:03:04,472 - ============================================================
+capdmarshal@Marshaalll:/media/capdmarshal/Data/Coding/PAM-FINAL/BE$ 

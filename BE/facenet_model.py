@@ -171,6 +171,28 @@ class FaceNetRecognitionModel:
         face_batch = np.expand_dims(face, axis=0)
         embedding = self.facenet.embeddings(face_batch)
         return embedding[0]
+
+    def get_embeddings_batch(self, faces):
+        """
+        Get FaceNet embeddings for a batch of faces
+        
+        Args:
+            faces: List of numpy arrays (RGB faces), or a single numpy array (N, 160, 160, 3)
+            
+        Returns:
+            numpy array of embeddings (N, 512)
+        """
+        if len(faces) == 0:
+            return np.array([])
+            
+        # Convert to numpy array if list
+        if isinstance(faces, list):
+            faces_array = np.array(faces)
+        else:
+            faces_array = faces
+            
+        embeddings = self.facenet.embeddings(faces_array)
+        return embeddings
     
     def _load_embeddings(self):
         """Load saved face embeddings"""
