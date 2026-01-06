@@ -1,15 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/pdf_helper.dart';
 
-class DetailSlipGajiPage extends StatelessWidget {
-  const DetailSlipGajiPage({super.key});
+class DetailSlipGajiPage extends StatefulWidget {
+  final String month;
+  final String year;
+  final List<dynamic> details;
+
+  const DetailSlipGajiPage({
+    super.key,
+    required this.month,
+    required this.year,
+    required this.details,
+  });
+
+  @override
+  State<DetailSlipGajiPage> createState() => _DetailSlipGajiPageState();
+}
+
+class _DetailSlipGajiPageState extends State<DetailSlipGajiPage> {
+  // ... (Identical to before)
+  String _userName = "";
+  String _nip = "";
+
+// ... (Identical init logic)
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('user_name') ?? "Karyawan"; 
+      _nip = prefs.getString('nip') ?? "-";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // ... logic remains same
+    // Separate items by category
+    final incomes = widget.details.where((d) => d['kategori'].toString().toLowerCase().trim() == 'penerimaan').toList();
+    final deductions = widget.details.where((d) => d['kategori'].toString().toLowerCase().trim() == 'potongan').toList();
+    
+    // Calculate totals
+    double totalIncome = incomes.fold(0, (sum, item) => sum + (item['jumlah'] is num ? item['jumlah'] : double.tryParse(item['jumlah'].toString()) ?? 0));
+    double totalDeduction = deductions.fold(0, (sum, item) => sum + (item['jumlah'] is num ? item['jumlah'] : double.tryParse(item['jumlah'].toString()) ?? 0));
+    double netSalary = totalIncome - totalDeduction;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      
-      // 1. APP BAR
       appBar: AppBar(
+         //... same appbar
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -35,8 +80,6 @@ class DetailSlipGajiPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
-            // 2. HEADER (Icon + Month + Download)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -44,25 +87,41 @@ class DetailSlipGajiPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.featured_play_list_outlined, color: Colors.blueAccent, size: 28),
                     const SizedBox(width: 10),
-                    const Text(
-                      "Maret",
-                      style: TextStyle(
+                    Text(
+                      "${widget.month} ${widget.year}", // Show Month + Year
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
-                // Download Icon Box
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blueAccent),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.download,
-                    color: Colors.blueAccent,
+                GestureDetector(
+                  onTap: () {
+                    if (_nip.isNotEmpty) {
+                      PdfHelper.generateAndPrintSlip(
+                        month: widget.month,
+                        year: widget.year,
+                        details: widget.details,
+                        userName: _userName,
+                        nip: _nip,
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Data pengguna belum dimuat sepenuhnya.")),
+                      );
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blueAccent),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.download,
+                      color: Colors.blueAccent,
+                    ),
                   ),
                 ),
               ],
@@ -89,14 +148,24 @@ class DetailSlipGajiPage extends StatelessWidget {
             ),
             const Divider(thickness: 1),
 
-            _buildRow("1", "Pendapatan", "Gaji Pokok", "5.000.000,00"),
-            _buildRow("2", "Pendapatan", "Tunjangan\nJabatan", "850.000,00"),
-            _buildRow("3", "Pendapatan", "Uang\nLembur", "380.000,00"),
+            if (incomes.isEmpty)
+              const Padding(padding: EdgeInsets.all(8.0), child: Text("- Tidak ada data -")),
+            
+            ...incomes.asMap().entries.map((entry) {
+              final index = entry.key + 1;
+              final item = entry.value;
+              return _buildRow(
+                index.toString(),
+                "Penerimaan", 
+                item['nama_komponen'] ?? '-', 
+                _formatCurrency(item['jumlah'])
+              );
+            }),
 
             const Divider(thickness: 1),
             
             // TOTAL KOTOR
-            _buildTotalRow("TOTAL KOTOR", "6.230.000,00"),
+            _buildTotalRow("TOTAL KOTOR", _formatCurrency(totalIncome)),
             
             const Divider(thickness: 1),
 
@@ -107,14 +176,24 @@ class DetailSlipGajiPage extends StatelessWidget {
             ),
             const Divider(thickness: 1),
 
-            _buildRow("4", "Potongan", "PPh Pasal 21", "120.000,00"),
-            _buildRow("5", "Potongan", "Iuran BPJS", "80.000,00"),
-            _buildRow("6", "Potongan", "Cicilan\nKaryawan", "30.000,00"),
+            if (deductions.isEmpty)
+              const Padding(padding: EdgeInsets.all(8.0), child: Text("- Tidak ada data -")),
+
+            ...deductions.asMap().entries.map((entry) {
+              final index = entry.key + 1; // You might want continuous numbering or reset
+              final item = entry.value;
+              return _buildRow(
+                (incomes.length + index).toString(),
+                "Potongan", 
+                item['nama_komponen'] ?? '-', 
+                _formatCurrency(item['jumlah'])
+              );
+            }),
 
             const Divider(thickness: 1),
             
             // TOTAL POTONGAN
-            _buildTotalRow("TOTAL POTONGAN", "230.000,00"),
+            _buildTotalRow("TOTAL POTONGAN", _formatCurrency(totalDeduction)),
             
             const Divider(thickness: 1),
 
@@ -128,9 +207,9 @@ class DetailSlipGajiPage extends StatelessWidget {
                   "GAJI BERSIH (THP)",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
-                const Text(
-                  "6.000.000,00",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                Text(
+                  _formatCurrency(netSalary),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
               ],
             ),
@@ -140,6 +219,17 @@ class DetailSlipGajiPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatCurrency(dynamic amount) {
+    double value = 0.0;
+    if (amount is num) {
+      value = amount.toDouble();
+    } else if (amount is String) {
+      value = double.tryParse(amount) ?? 0.0;
+    }
+    final format = NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 2);
+    return format.format(value);
   }
 
   // Helper for standard data rows

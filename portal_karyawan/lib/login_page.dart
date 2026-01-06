@@ -63,10 +63,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response != null) {
         // Login successful
+        // Always save NIP for session usage
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('nip', response['nip']);
+
         if (_isRememberMeChecked) {
-          final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('nip', response['nip']);
         }
 
         if (mounted) {

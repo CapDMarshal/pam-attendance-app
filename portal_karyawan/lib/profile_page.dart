@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -12,6 +15,138 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _currentPassController = TextEditingController();
   final TextEditingController _newPassController = TextEditingController();
   final TextEditingController _confirmPassController = TextEditingController();
+  
+  // Profile Data
+  String _fullName = "Loading...";
+  String _nip = "...";
+  String _email = "...";
+  bool _isLoading = true;
+  bool _isUpdatingPassword = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfileData();
+  }
+
+  Future<void> _fetchProfileData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? nip = prefs.getString('nip');
+
+      if (nip != null) {
+        final response = await Supabase.instance.client
+            .from('karyawan')
+            .select() // Select all fields to get email as well
+            .eq('nip', nip)
+            .maybeSingle();
+
+        if (response != null) {
+          if (mounted) {
+            setState(() {
+              _fullName = response['nama_lengkap'] ?? "Unknown";
+              _nip = response['nip'] ?? nip;
+              _email = response['email'] ?? "No Email";
+              _isLoading = false;
+            });
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching profile: $e");
+      if (mounted) {
+        setState(() {
+          _fullName = "Error loading";
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _changePassword() async {
+    final currentPass = _currentPassController.text;
+    final newPass = _newPassController.text;
+    final confirmPass = _confirmPassController.text;
+
+    if (currentPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all password fields')),
+      );
+      return;
+    }
+
+    if (newPass != confirmPass) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('New passwords do not match')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isUpdatingPassword = true;
+    });
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? nip = prefs.getString('nip');
+
+      if (nip == null) {
+        throw Exception("User session not found");
+      }
+
+      // 1. Verify current password
+      final checkResponse = await Supabase.instance.client
+          .from('karyawan')
+          .select('id')
+          .eq('nip', nip)
+          .eq('password', currentPass)
+          .maybeSingle();
+
+      if (checkResponse == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Incorrect current password'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+
+      // 2. Update to new password
+      await Supabase.instance.client
+          .from('karyawan')
+          .update({'password': newPass})
+          .eq('nip', nip);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Password updated successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        
+        // Clear fields
+        _currentPassController.clear();
+        _newPassController.clear();
+        _confirmPassController.clear();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating password: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isUpdatingPassword = false;
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -81,22 +216,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: const Icon(Icons.person_outline, size: 50, color: Colors.black),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    "Kevin Geraldi Harjanto L",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    "NIP: 123456789",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
-                    ),
-                  ),
+                  const SizedBox(height: 16),
+                  _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Column(
+                          children: [
+                            Text(
+                              _fullName,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "NIP: $_nip",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -104,13 +247,17 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 25),
 
             // 3. EMAIL ROW
-            const Row(
+            // 3. EMAIL ROW
+            Row(
               children: [
-                Icon(Icons.email_outlined, size: 24),
-                SizedBox(width: 10),
-                Text(
-                  "Email :  Kevin@gmail.com",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                const Icon(Icons.email_outlined, size: 24),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    "Email :  $_email",
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
@@ -139,9 +286,7 @@ class _ProfilePageState extends State<ProfilePage> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  print("Submit pressed");
-                },
+                onPressed: _isUpdatingPassword ? null : _changePassword,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: brandColor,
                   foregroundColor: Colors.white,
@@ -149,20 +294,46 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text("Submit", style: TextStyle(fontSize: 16)),
+                child: _isUpdatingPassword
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      )
+                    : const Text("Submit", style: TextStyle(fontSize: 16)),
               ),
             ),
 
             const SizedBox(height: 15),
 
-            // Logout Button (Text says 'Login' in your design, but red usually means Logout)
+            // Logout Button
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  // Usually, this would clear session and navigate back to LoginScreen
-                  print("Logout pressed");
+                onPressed: () async {
+                  // Clear session
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.clear();
+
+                  if (context.mounted) {
+                    // Navigate back to LoginScreen and remove all previous routes
+                    Navigator.pushNamedAndRemoveUntil(
+                      context, 
+                      '/', // Assuming '/' is the route for login or main wrapper
+                      (route) => false,
+                    ).catchError((_) {
+                       // Fallback if named route isn't defined, though main.dart usually has home: LoginScreen or wrapper
+                       // Since main.dart uses home: SplashScreen -> Login, we might need to verify the route name.
+                       // Looking at main.dart, it doesn't define named routes. 
+                       // I should check main.dart or just push Replacement with the widget.
+                    });
+                     // Safest approach without named routes:
+                     Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      (Route<dynamic> route) => false,
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF3B3B), // Bright Red
