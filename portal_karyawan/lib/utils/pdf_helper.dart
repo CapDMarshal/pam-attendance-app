@@ -306,4 +306,235 @@ class PdfHelper {
     final format = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ', decimalDigits: 2);
     return format.format(value);
   }
+
+  // --- ATTENDANCE REPORTS ---
+
+  static Future<void> generateAndPrintAttendanceReport({
+    required String monthYear,
+    required List<Map<String, dynamic>> attendanceData,
+    required String userName,
+    required String nip,
+    required int totalPresence,
+    required double percentage,
+  }) async {
+    final pdf = pw.Document();
+    final font = await PdfGoogleFonts.openSansRegular();
+    final fontBold = await PdfGoogleFonts.openSansBold();
+
+    final List<List<String>> tableData = [];
+    for (var item in attendanceData) {
+      tableData.add([
+        item['date'].toString(),
+        item['in'].toString(),
+        item['out'].toString(),
+        item['status'].toString(),
+      ]);
+    }
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
+        theme: pw.ThemeData.withFont(base: font, bold: fontBold),
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+               _buildHeader("LAPORAN ABSENSI", "PAM ATTENDANCE", "Portal Karyawan"),
+               pw.SizedBox(height: 20),
+               
+               // Info Box
+               pw.Container(
+                padding: const pw.EdgeInsets.all(10),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: PdfColors.grey),
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                ),
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text("Nama: $userName", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text("NIP: $nip"),
+                      ],
+                    ),
+                    pw.Text("Periode: $monthYear", style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                  ],
+                ),
+              ),
+              pw.SizedBox(height: 10),
+              
+              // Stats
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                   pw.Text("Total Kehadiran: $totalPresence x (${(percentage * 100).toInt()}%)", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                ]
+              ),
+              pw.SizedBox(height: 10),
+
+              // Table
+              pw.TableHelper.fromTextArray(
+                headers: ['Tanggal', 'Masuk', 'Pulang', 'Status'],
+                data: tableData,
+                headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, color: PdfColors.white),
+                headerDecoration: const pw.BoxDecoration(color: PdfColors.blueGrey800),
+                cellAlignment: pw.Alignment.centerLeft,
+                cellAlignments: {
+                  0: pw.Alignment.centerLeft,
+                  1: pw.Alignment.center,
+                  2: pw.Alignment.center,
+                  3: pw.Alignment.centerRight
+                },
+              ),
+              
+              pw.Spacer(),
+              _buildFooter(),
+            ],
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+      name: 'Laporan_Absensi_${monthYear}_$nip',
+    );
+  }
+
+  static Future<void> generateAndPrintAttendanceYearlySummary({
+    required String year,
+    required List<Map<String, dynamic>> monthList, // Expected: monthName, count, percentage
+    required String userName,
+    required String nip,
+  }) async {
+    final pdf = pw.Document();
+    final font = await PdfGoogleFonts.openSansRegular();
+    final fontBold = await PdfGoogleFonts.openSansBold();
+
+    final List<List<String>> tableData = [];
+    int totalPresenceYear = 0;
+
+    for (var item in monthList) {
+        final int count = (item['count'] is num) ? (item['count'] as num).toInt() : 0;
+        final double pct = (item['percentage'] is num) ? (item['percentage'] as num).toDouble() : 0.0;
+        totalPresenceYear += count;
+
+        tableData.add([
+           item['monthName'].toString(),
+           "$count x",
+           "${(pct * 100).toInt()}%",
+        ]);
+    }
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
+        theme: pw.ThemeData.withFont(base: font, bold: fontBold),
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+               _buildHeader("REKAPITULASI ABSENSI", "PAM ATTENDANCE", "Portal Karyawan"),
+               pw.SizedBox(height: 20),
+               
+               // Info Box
+               pw.Container(
+                padding: const pw.EdgeInsets.all(10),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: PdfColors.grey),
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                ),
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text("Nama: $userName", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text("NIP: $nip"),
+                      ],
+                    ),
+                    pw.Text("Tahun: $year", style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                  ],
+                ),
+              ),
+              pw.SizedBox(height: 20),
+
+              // Table
+              pw.TableHelper.fromTextArray(
+                headers: ['Bulan', 'Jumlah Kehadiran', 'Persentase'],
+                data: tableData,
+                headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, color: PdfColors.white),
+                headerDecoration: const pw.BoxDecoration(color: PdfColors.blueGrey800),
+                cellAlignment: pw.Alignment.centerLeft,
+                cellAlignments: {
+                  1: pw.Alignment.center,
+                  2: pw.Alignment.centerRight
+                },
+              ),
+              
+              pw.SizedBox(height: 10),
+              pw.Divider(thickness: 2),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                    pw.Text("TOTAL KEHADIRAN TAHUN $year", style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                    pw.Text("$totalPresenceYear x", style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                ]
+              ),
+
+              pw.Spacer(),
+              _buildFooter(),
+            ],
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+      name: 'Rekap_Absensi_${year}_$nip',
+    );
+  }
+
+  // --- REUSABLE COMPONENTS ---
+
+  static pw.Widget _buildHeader(String title, String sub1, String sub2) {
+    return pw.Header(
+      level: 0,
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Text(title, style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.end,
+            children: [
+              pw.Text(sub1, style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
+              pw.Text(sub2, style: const pw.TextStyle(fontSize: 10)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  static pw.Widget _buildFooter() {
+     return pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.end,
+      children: [
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.center,
+          children: [
+            pw.Text("Dicetak Tanggal: ${DateFormat('dd MMMM yyyy').format(DateTime.now())}"),
+            pw.SizedBox(height: 40),
+            pw.Text("( HRD Manager )", style: const pw.TextStyle(color: PdfColors.grey)),
+          ],
+        ),
+      ],
+    );
+  }
 }
