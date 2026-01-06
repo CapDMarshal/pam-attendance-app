@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dashboard_page.dart'; // <--- IMPORT THE DASHBOARD PAGE HERE
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dashboard_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,18 +11,95 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Controllers to retrieve text input
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nipController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
-  // State for the checkbox
   bool _isRememberMeChecked = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DashboardPage()),
+      );
+    }
+  }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _nipController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    if (_nipController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in both NIP and Password')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await Supabase.instance.client
+          .from('karyawan')
+          .select()
+          .eq('nip', _nipController.text)
+          .eq('password', _passwordController.text)
+          .maybeSingle();
+
+      if (response != null) {
+        // Login successful
+        // Always save NIP for session usage
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('nip', response['nip']);
+
+        if (_isRememberMeChecked) {
+          await prefs.setBool('isLoggedIn', true);
+        }
+
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardPage()),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Invalid NIP or Password'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -30,16 +109,13 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        // CENTER WIDGET: Forces the entire scrollable form to the middle of the screen
-        child: Center( 
+        child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                
-                // --- HEADER SECTION (Logo + Text) ---
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -52,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text(
                       "CODING ANARCHIST",
                       style: TextStyle(
-                        fontFamily: 'RapidResponse', 
+                        fontFamily: 'RapidResponse',
                         fontSize: 22,
                         color: brandColor,
                         letterSpacing: 1.0,
@@ -60,20 +136,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 50), // Spacing between header and form
-
-                // --- EMAIL FIELD ---
+                const SizedBox(height: 50),
                 const Text(
-                  "Email Address",
+                  "NIP",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 8),
                 TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
+                  controller: _nipController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    hintText: 'Enter your NIP',
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: const BorderSide(color: Colors.grey),
@@ -84,10 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
-                // --- PASSWORD FIELD ---
                 const Text(
                   "Password",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -95,9 +169,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 8),
                 TextField(
                   controller: _passwordController,
-                  obscureText: true, // Hides the password
+                  obscureText: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    hintText: 'Enter your password',
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: const BorderSide(color: Colors.grey),
@@ -108,10 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 15),
-
-                // --- REMEMBER ME & FORGOT PASSWORD ---
                 Row(
                   children: [
                     SizedBox(
@@ -129,12 +204,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(width: 8),
                     const Text("Remember me"),
-                    
-                    const Spacer(), // Pushes "Forgot Password" to the far right
-                    
+                    const Spacer(),
                     GestureDetector(
                       onTap: () {
-                        print("Forgot password tapped");
+                        // TODO: Implement Forgot Password
                       },
                       child: const Text(
                         "Forgot Password",
@@ -146,26 +219,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 30),
-
-                // --- LOGIN BUTTON ---
                 SizedBox(
-                  width: double.infinity, // Full width button
+                  width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // 1. (Optional) Print inputs to console for testing
-                      print("Email: ${_emailController.text}");
-                      print("Password: ${_passwordController.text}");
-                      
-                      // 2. NAVIGATE TO DASHBOARD
-                      // We use pushReplacement so the user can't click "Back" to return to Login
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const DashboardPage()),
-                      );
-                    },
+                    onPressed: _isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: brandColor,
                       foregroundColor: Colors.white,
@@ -174,10 +233,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       elevation: 2,
                     ),
-                    child: const Text(
-                      "Login",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ],
