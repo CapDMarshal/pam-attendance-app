@@ -1,6 +1,6 @@
 class SupabaseConfig {
-  // TODO: Replace with your actual Supabase URL and Anon Key
-  static const String supabaseUrl = 'https://kdfyjkkhmobkhlyyhnhl.supabase.co';
+  static const String supabaseUrl =
+      'https://kdfyjkkhmobkhlyyhnhl.supabase.co'; // Replace with actual URL
   static const String supabaseAnonKey =
-      'sb_publishable_dZVgutGBfIn8jXCDajYYqA_N0Je-zZW';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkZnlqa2tobW9ia2hseXlobmhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczNjc4MDAsImV4cCI6MjA4Mjk0MzgwMH0.R3PH-esivBymG8NPBDKBKwZILIhBZc-pJvSCAmcxQUA'; // Replace with actual Key
 }

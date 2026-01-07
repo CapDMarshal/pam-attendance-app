@@ -54,18 +54,20 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final response = await Supabase.instance.client
-          .from('karyawan')
-          .select()
-          .eq('nip', _nipController.text)
-          .eq('password', _passwordController.text)
-          .maybeSingle();
+      // 1. Authenticate with Supabase Auth
+      // Email format: [NIP]@pam.com
+      final email = "${_nipController.text}@pam.com";
 
-      if (response != null) {
+      final AuthResponse res = await Supabase.instance.client.auth
+          .signInWithPassword(email: email, password: _passwordController.text);
+
+      if (res.session != null) {
         // Login successful
-        // Always save NIP for session usage
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('nip', response['nip']);
+        await prefs.setString(
+          'nip',
+          _nipController.text,
+        ); // Still store NIP for other queries
 
         if (_isRememberMeChecked) {
           await prefs.setBool('isLoggedIn', true);
@@ -77,15 +79,12 @@ class _LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(builder: (context) => const DashboardPage()),
           );
         }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Invalid NIP or Password'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+        );
       }
     } catch (e) {
       if (mounted) {
