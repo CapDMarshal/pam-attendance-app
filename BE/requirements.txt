@@ -10,4 +10,6 @@ keras-facenet
 scikit-learn
 mtcnn
 tqdm
+supabase
+python-dotenv
 
