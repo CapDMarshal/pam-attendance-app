@@ -15,8 +15,7 @@ BE/registered_faces/
 BE/face_embeddings.json
 BE/*.pkl
 BE/*.h5
-BE/datasets
-
+BE/datasets/DataTest
 dataset_backup
 
 # Attendance Data (Backend)
