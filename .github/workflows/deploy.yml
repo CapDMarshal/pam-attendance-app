@@ -1,0 +1,31 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'BE/**'  # Only trigger when files in BE folder change
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Navigate to backend directory
+            cd /home/pam-attendance-app/BE
+            
+            # Pull latest changes
+            git pull origin main
+            
+            # Update dependencies
+            source venv/bin/activate
+            pip install -r requirements.txt
+            
+            # Restart the service
+            sudo systemctl restart facerecog

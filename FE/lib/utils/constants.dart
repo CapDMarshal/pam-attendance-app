@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 // API Configuration
 class ApiConstants {
-  static final String baseUrl =
-      'https://hypocycloidal-intensely-raven.ngrok-free.dev';
+  static final String baseUrl = 'http://35.240.154.58:8000';
   static const String clockInEndpoint = '/api/clock-in';
   static const String clockOutEndpoint = '/api/clock-out';
   static const String recognizeEndpoint = '/api/recognize';
