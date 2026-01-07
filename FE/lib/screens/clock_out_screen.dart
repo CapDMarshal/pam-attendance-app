@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_button.dart';
 import '../services/api_service.dart';
@@ -75,55 +76,93 @@ class _ClockOutScreenState extends State<ClockOutScreen> {
       final image = await _cameraController!.takePicture();
       final File imageFile = File(image.path);
 
-      // Call API
-      final result = await ApiService().clockOut(imageFile);
+      // 1. Recognize Face
+      final result = await ApiService().recognizeFace(imageFile);
 
       if (mounted) {
         final status = result['status'] ?? 'unknown';
 
         if (status == 'recognized') {
-          // Success - face recognized
-          setState(() {
-            _message = result['message'];
-          });
+          final String? nip = result['nip'];
+          final String? name = result['name'];
 
-          // Show success dialog
-          _showResultDialog(
-            'Clock-Out Successful',
-            'Goodbye, ${result['name']}!\nTime: ${_formatTimestamp(result['timestamp'])}',
-            true,
-          );
+          if (nip != null) {
+            // 2. Record Clock Out in Supabase
+            try {
+              final supabase = Supabase.instance.client;
+
+              // Find the latest 'in' record for this user
+              final List<dynamic> records = await supabase
+                  .from('kehadiran')
+                  .select()
+                  .eq('nip', nip)
+                  .eq('status', 'in')
+                  .order('waktu_clockin', ascending: false)
+                  .limit(1);
+
+              final String timestamp = DateTime.now().toIso8601String();
+
+              if (records.isNotEmpty) {
+                // Update existing record
+                final recordId = records[0]['id']; // Assuming 'id' is PK
+                await supabase
+                    .from('kehadiran')
+                    .update({'waktu_clockout': timestamp, 'status': 'out'})
+                    .eq('id', recordId);
+              } else {
+                // No open session found, insert new 'out' record (or warn user)
+                // For now, let's insert a record to log the event
+                await supabase.from('kehadiran').insert({
+                  'nip': nip,
+                  'waktu_clockout': timestamp,
+                  'status': 'out',
+                  // 'waktu_clockin': timestamp, // Optional: treat as instantaneous?
+                  'status_presensi': 'hadir',
+                });
+              }
+
+              setState(() {
+                _message = 'Clock-Out Successful';
+              });
+
+              _showResultDialog(
+                'Clock-Out Successful',
+                'Goodbye, $name!\nNIP: $nip\nTime: ${_formatTimestamp(timestamp)}',
+                true,
+              );
+            } catch (dbError) {
+              print('❌ Database Error: $dbError');
+              setState(() {
+                _message = 'Database Error: $dbError';
+              });
+              _showResultDialog(
+                'Clock-Out Failed',
+                'Face recognized but failed to update attendance.\nError: $dbError',
+                false,
+              );
+            }
+          } else {
+            setState(() {
+              _message = 'NIP not found for $name';
+            });
+            _showResultDialog(
+              'Clock-Out Failed',
+              'User recognized as $name but has no valid NIP.',
+              false,
+            );
+          }
         } else if (status == 'unrecognized') {
-          // Face detected but not recognized
           setState(() {
             _message = result['message'];
           });
-
-          _showResultDialog(
-            'Clock-Out Failed',
-            'Face not recognized.\nPlease ensure you are registered in the system.',
-            false,
-          );
-        } else if (status == 'undetected') {
-          // No face detected
-          setState(() {
-            _message = result['message'];
-          });
-
-          _showResultDialog(
-            'Clock-Out Failed',
-            'No face detected in image.\nPlease position your face clearly within the frame.',
-            false,
-          );
+          _showResultDialog('Clock-Out Failed', 'Face not recognized.', false);
         } else {
-          // Unknown error
           setState(() {
-            _message = result['message'] ?? 'Unknown error';
+            _message = result['message'];
           });
-
           _showResultDialog(
             'Clock-Out Failed',
-            result['message'] ?? 'An error occurred',
+            'Face detection failed: ${result['message']}',
             false,
           );
         }

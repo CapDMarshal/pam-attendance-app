@@ -348,5 +348,12 @@
         "phone": "5231911020",
         "password": "sitinabilamaulidya123",
         "faceImage": "datasets/new_dataset/5231911020_siti nabila maulidya_04.jpg"
+    },
+    {
+        "id": "51",
+        "name": "Marshal",
+        "phone": "5230411031",
+        "password": "Marshal123",
+        "faceImage": "datasets/new_dataset/5230411031_Marshal_1.jpg"
     }
 ]

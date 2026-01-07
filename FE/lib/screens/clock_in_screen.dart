@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_button.dart';
 import '../services/api_service.dart';
@@ -75,63 +76,81 @@ class _ClockInScreenState extends State<ClockInScreen> {
       final image = await _cameraController!.takePicture();
       final File imageFile = File(image.path);
 
-      // Debug: Check file size
-      final fileSize = await imageFile.length();
-      print('📸 Image captured: ${image.path}');
-      print('📸 File size: ${(fileSize / 1024).toStringAsFixed(2)} KB');
-
-      // Call API
-      final result = await ApiService().clockIn(imageFile);
+      // 1. Recognize Face via VM
+      final result = await ApiService().recognizeFace(imageFile);
 
       if (mounted) {
         final status = result['status'] ?? 'unknown';
 
         if (status == 'recognized') {
-          // Success - face recognized
-          setState(() {
-            _message = result['message'];
-          });
+          // 2. Parse NIP and Name
+          final String? nip = result['nip'];
+          final String? name = result['name'];
 
-          // Show success dialog
-          _showResultDialog(
-            'Clock-In Successful',
-            'Welcome, ${result['name']}!\nTime: ${_formatTimestamp(result['timestamp'])}',
-            true,
-          );
+          if (nip != null) {
+            // 3. Record Attendance in Supabase
+            try {
+              final supabase = Supabase.instance.client;
+
+              // Check if already clocked in today?
+              // For simplicity in Kiosk mode, we just insert.
+              // Or better: Upsert based on NIP + Date logic if needed, but simple Insert is safer for logs.
+              // Schema assumption: 'kehadiran' table.
+
+              await supabase.from('kehadiran').insert({
+                'nip': nip,
+                'waktu_clockin': DateTime.now().toIso8601String(),
+                'status': 'in',
+                'status_presensi': 'hadir', // Default present
+              });
+
+              setState(() {
+                _message = 'Clock-In Successful';
+              });
+
+              _showResultDialog(
+                'Clock-In Successful',
+                'Welcome, $name!\nNIP: $nip\nTime: ${_formatTimestamp(DateTime.now().toIso8601String())}',
+                true,
+              );
+            } catch (dbError) {
+              print('❌ Database Error: $dbError');
+              setState(() {
+                _message = 'Database Error: $dbError';
+              });
+              _showResultDialog(
+                'Clock-In Failed',
+                'Face recognized but failed to save attendance.\nError: $dbError',
+                false,
+              );
+            }
+          } else {
+            // Recognized but no NIP found (Legacy data?)
+            setState(() {
+              _message = 'NIP not found for $name';
+            });
+            _showResultDialog(
+              'Clock-In Failed',
+              'User recognized as $name but has no valid NIP linked.',
+              false,
+            );
+          }
         } else if (status == 'unrecognized') {
-          // Face detected but not recognized
           setState(() {
             _message = result['message'];
           });
-
           _showResultDialog(
             'Clock-In Failed',
-            'Face not recognized.\nPlease ensure you are registered in the system.',
-            false,
-          );
-        } else if (status == 'undetected') {
-          // No face detected
-          setState(() {
-            _message = result['message'];
-          });
-
-          _showResultDialog(
-            'Clock-In Failed',
-            'No face detected in image.\nPlease position your face clearly within the frame.',
+            'Face not recognized.\nPlease ensure you are registered.',
             false,
           );
         } else {
-          // Unknown error or status
-          print('⚠️ Unknown status received: $status');
-          print('⚠️ Full API result: $result');
-
           setState(() {
-            _message = result['message'] ?? 'Unknown error';
+            _message = result['message'];
           });
-
           _showResultDialog(
             'Clock-In Failed',
-            result['message'] ?? 'An error occurred. Please check the logs.',
+            'Face detection failed: ${result['message']}',
             false,
           );
         }

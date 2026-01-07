@@ -49,6 +49,7 @@ dependencies:
   
   # Path provider for file handling
   path_provider: ^2.1.1
+  supabase_flutter: ^2.12.0
 
 dev_dependencies:
   flutter_test:

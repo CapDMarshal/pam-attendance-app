@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'screens/dashboard_screen.dart';
 import 'utils/constants.dart';
+import 'utils/supabase_config.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Supabase
+  await SupabaseConfig.initialize();
+
   runApp(const MyApp());
 }
 
