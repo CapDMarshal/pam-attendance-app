@@ -121,13 +121,36 @@ def main():
             else:
                 logger.warning(f"⚠️ Photo not found for {name}: {local_photo_path}")
             
-            # 3. Insert into Table
+            # 3. Create Supabase Auth User
+            email = f"{nip}@pam.com"  # Generate dummy email for Auth
+            
+            try:
+                # Check if user exists (by email) - this part is tricky in batch, 
+                # but create_user will fail if exists.
+                # We use admin.create_user to set specific password and Confirm email automatically
+                auth_response = supabase.auth.admin.create_user({
+                    "email": email,
+                    "password": password,
+                    "email_confirm": True,
+                    "user_metadata": {
+                        "nip": nip,
+                        "full_name": name
+                    }
+                })
+                # auth_user_id = auth_response.user.id
+                logger.info(f"✅ Created Auth User: {nip}")
+                
+            except Exception as auth_error:
+                # If user already exists, we might get an error.
+                # We'll log it but continue to update the profile (photo/name)
+                logger.warning(f"⚠️ Auth User creation skipped/failed for {nip} (might exist): {auth_error}")
+
+            # 4. Insert into 'karyawan' Table (Profile)
             data = {
                 "nip": nip,
                 "nama_lengkap": name,
                 "foto_wajah": public_url,
-                "password": password
-                # "email": "" # Optional, skipping
+                # "email": email # Optional, add if column exists
             }
             
             # Upsert (using NIP as conflict key)
