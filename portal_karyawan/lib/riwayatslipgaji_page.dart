@@ -46,7 +46,8 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
         }
 
         if (yearSet.isNotEmpty) {
-          final sortedYears = yearSet.toList()..sort((a, b) => b.compareTo(a)); // Descending: 2026, 2025...
+          final sortedYears = yearSet.toList()
+            ..sort((a, b) => b.compareTo(a)); // Descending: 2026, 2025...
           if (mounted) {
             setState(() {
               _years = sortedYears;
@@ -56,10 +57,16 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
             // Fetch data for this default year immediately
             _fetchSlipGaji();
           }
+        } else {
+          // No data found (RLS or empty)
+          if (mounted) {
+            setState(() => _isLoading = false);
+          }
         }
       }
     } catch (e) {
       debugPrint("Error fetching years: $e");
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -86,7 +93,7 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
 
         for (var slip in response) {
           double totalAmount = 0;
-          
+
           // Calculate Net Salary: Penerimaan - Potongan
           if (slip['slip_gaji_detail'] != null) {
             for (var detail in slip['slip_gaji_detail']) {
@@ -99,7 +106,10 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
                 amount = double.tryParse(rawAmount) ?? 0.0;
               }
 
-              final String category = detail['kategori'].toString().toLowerCase().trim();
+              final String category = detail['kategori']
+                  .toString()
+                  .toLowerCase()
+                  .trim();
 
               if (category == 'penerimaan') {
                 totalAmount += amount;
@@ -112,9 +122,10 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
           // Determine Status Display
           String statusText = "Status Tidak Diketahui";
           Color statusColor = Colors.grey;
-          
-          final String dbStatus = slip['status']?.toString().toLowerCase().trim() ?? '';
-          
+
+          final String dbStatus =
+              slip['status']?.toString().toLowerCase().trim() ?? '';
+
           if (dbStatus == 'diambil') {
             statusText = "Telah Diambil";
             statusColor = Colors.green;
@@ -126,9 +137,9 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
           loadedSlips.add({
             'month': _getMonthName(slip['bulan']),
             'amount': totalAmount,
-            'status': statusText, 
+            'status': statusText,
             'statusColor': statusColor,
-            'data': slip, 
+            'data': slip,
           });
         }
 
@@ -151,8 +162,18 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
 
   String _getMonthName(int month) {
     const months = [
-      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
     ];
     if (month >= 1 && month <= 12) {
       return months[month - 1];
@@ -161,7 +182,11 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
   }
 
   String _formatCurrency(double amount) {
-    final format = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ', decimalDigits: 0);
+    final format = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp. ',
+      decimalDigits: 0,
+    );
     return format.format(amount);
   }
 
@@ -169,19 +194,19 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
+
       // 1. APP BAR
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context), 
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Slip Gaji",
           style: TextStyle(
-            color: Colors.black, 
+            color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -197,18 +222,18 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             // 2. HEADER
             Row(
               children: [
-                const Icon(Icons.featured_play_list_outlined, color: Colors.blueAccent, size: 28),
+                const Icon(
+                  Icons.featured_play_list_outlined,
+                  color: Colors.blueAccent,
+                  size: 28,
+                ),
                 const SizedBox(width: 10),
                 const Text(
                   "Daftar Slip Gaji",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -221,7 +246,10 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
               children: [
                 // Year Dropdown
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: _selectedYear,
@@ -239,7 +267,9 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
                           _fetchSlipGaji();
                         }
                       },
-                      items: _years.map<DropdownMenuItem<String>>((String value) {
+                      items: _years.map<DropdownMenuItem<String>>((
+                        String value,
+                      ) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -248,15 +278,19 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
                     ),
                   ),
                 ),
-                
+
                 // Download Button for Yearly Summary
                 GestureDetector(
                   onTap: () async {
                     if (_slipList.isEmpty) {
-                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Tidak ada data untuk tahun ini.")));
-                       return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Tidak ada data untuk tahun ini."),
+                        ),
+                      );
+                      return;
                     }
-                    
+
                     final prefs = await SharedPreferences.getInstance();
                     final userName = prefs.getString('user_name') ?? "Karyawan";
                     final nip = prefs.getString('nip') ?? "-";
@@ -286,35 +320,40 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _slipList.isEmpty
-                    ? const Center(child: Text("Tidak ada data slip gaji."))
-                    : ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _slipList.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 16),
-                        itemBuilder: (context, index) {
-                          final slip = _slipList[index];
-                          return GestureDetector(
-                            onTap: () {
-                              debugPrint("Navigating to Detail. Month: ${slip['month']}");
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => DetailSlipGajiPage(
-                                  month: slip['month'],
-                                  year: _selectedYear,
-                                  details: slip['data']['slip_gaji_detail'] ?? [],
-                                )),
-                              );
-                            },
-                            child: _buildSlipGajiCard(
-                              month: slip['month'],
-                              amount: _formatCurrency(slip['amount']),
-                              statusText: slip['status'],
-                              statusColor: slip['statusColor'],
+                ? const Center(child: Text("Tidak ada data slip gaji."))
+                : ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _slipList.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 16),
+                    itemBuilder: (context, index) {
+                      final slip = _slipList[index];
+                      return GestureDetector(
+                        onTap: () {
+                          debugPrint(
+                            "Navigating to Detail. Month: ${slip['month']}",
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailSlipGajiPage(
+                                month: slip['month'],
+                                year: _selectedYear,
+                                details: slip['data']['slip_gaji_detail'] ?? [],
+                              ),
                             ),
                           );
                         },
-                      ),
+                        child: _buildSlipGajiCard(
+                          month: slip['month'],
+                          amount: _formatCurrency(slip['amount']),
+                          statusText: slip['status'],
+                          statusColor: slip['statusColor'],
+                        ),
+                      );
+                    },
+                  ),
           ],
         ),
       ),
@@ -351,7 +390,7 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
               const Icon(Icons.arrow_forward, color: Colors.black),
             ],
           ),
-          
+
           const SizedBox(height: 12),
 
           // Inner White Card
@@ -367,7 +406,7 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start, 
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Left Side: Label and Amount
                     Column(
@@ -387,7 +426,7 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
                         ),
                       ],
                     ),
-                    
+
                     // Right Side: Status Text
                     Text(
                       statusText,

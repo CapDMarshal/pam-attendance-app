@@ -15,7 +15,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _currentPassController = TextEditingController();
   final TextEditingController _newPassController = TextEditingController();
   final TextEditingController _confirmPassController = TextEditingController();
-  
+
   // Profile Data
   String _fullName = "Loading...";
   String _nip = "...";
@@ -87,38 +87,22 @@ class _ProfilePageState extends State<ProfilePage> {
     });
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final String? nip = prefs.getString('nip');
-
-      if (nip == null) {
-        throw Exception("User session not found");
+      // 1. Re-authenticate to verify current password
+      // We need email from session or profile
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null || user.email == null) {
+        throw Exception("User not authenticated");
       }
 
-      // 1. Verify current password
-      final checkResponse = await Supabase.instance.client
-          .from('karyawan')
-          .select('id')
-          .eq('nip', nip)
-          .eq('password', currentPass)
-          .maybeSingle();
+      await Supabase.instance.client.auth.signInWithPassword(
+        email: user.email!,
+        password: currentPass,
+      );
 
-      if (checkResponse == null) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Incorrect current password'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        return;
-      }
-
-      // 2. Update to new password
-      await Supabase.instance.client
-          .from('karyawan')
-          .update({'password': newPass})
-          .eq('nip', nip);
+      // 2. Update Password
+      await Supabase.instance.client.auth.updateUser(
+        UserAttributes(password: newPass),
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -127,16 +111,28 @@ class _ProfilePageState extends State<ProfilePage> {
             backgroundColor: Colors.green,
           ),
         );
-        
+
         // Clear fields
         _currentPassController.clear();
         _newPassController.clear();
         _confirmPassController.clear();
       }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Auth Error: ${e.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating password: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Error updating password: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -159,11 +155,13 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     const Color brandColor = Color(0xFF4277BC);
-    const Color cardBgColor = Color(0xFFA8C7FA); // Light blue for card background
+    const Color cardBgColor = Color(
+      0xFFA8C7FA,
+    ); // Light blue for card background
 
     return Scaffold(
       backgroundColor: Colors.white,
-      
+
       // 1. APP BAR
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -192,7 +190,6 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             // 2. PROFILE CARD
             Container(
               width: double.infinity,
@@ -213,7 +210,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       border: Border.all(color: Colors.black, width: 2),
                       color: Colors.transparent, // Or white if you prefer
                     ),
-                    child: const Icon(Icons.person_outline, size: 50, color: Colors.black),
+                    child: const Icon(
+                      Icons.person_outline,
+                      size: 50,
+                      color: Colors.black,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   const SizedBox(height: 16),
@@ -255,7 +256,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 Expanded(
                   child: Text(
                     "Email :  $_email",
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -267,14 +271,14 @@ class _ProfilePageState extends State<ProfilePage> {
             // 4. PASSWORD FORM
             _buildLabel("Current Password"),
             _buildTextField(_currentPassController),
-            
+
             const SizedBox(height: 15),
-            
+
             _buildLabel("New Password"),
             _buildTextField(_newPassController),
-            
+
             const SizedBox(height: 15),
-            
+
             _buildLabel("Confirm New Password"),
             _buildTextField(_confirmPassController),
 
@@ -298,7 +302,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
                       )
                     : const Text("Submit", style: TextStyle(fontSize: 16)),
               ),
@@ -316,21 +323,26 @@ class _ProfilePageState extends State<ProfilePage> {
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.clear();
 
+                  // Sign out from Supabase
+                  await Supabase.instance.client.auth.signOut();
+
                   if (context.mounted) {
                     // Navigate back to LoginScreen and remove all previous routes
                     Navigator.pushNamedAndRemoveUntil(
-                      context, 
+                      context,
                       '/', // Assuming '/' is the route for login or main wrapper
                       (route) => false,
                     ).catchError((_) {
-                       // Fallback if named route isn't defined, though main.dart usually has home: LoginScreen or wrapper
-                       // Since main.dart uses home: SplashScreen -> Login, we might need to verify the route name.
-                       // Looking at main.dart, it doesn't define named routes. 
-                       // I should check main.dart or just push Replacement with the widget.
+                      // Fallback if named route isn't defined, though main.dart usually has home: LoginScreen or wrapper
+                      // Since main.dart uses home: SplashScreen -> Login, we might need to verify the route name.
+                      // Looking at main.dart, it doesn't define named routes.
+                      // I should check main.dart or just push Replacement with the widget.
                     });
-                     // Safest approach without named routes:
-                     Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    // Safest approach without named routes:
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
                       (Route<dynamic> route) => false,
                     );
                   }
@@ -342,7 +354,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text("Logout", style: TextStyle(fontSize: 16)), 
+                child: const Text("Logout", style: TextStyle(fontSize: 16)),
               ),
             ),
           ],
@@ -368,7 +380,10 @@ class _ProfilePageState extends State<ProfilePage> {
       controller: controller,
       obscureText: true, // Passwords are hidden
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.grey),

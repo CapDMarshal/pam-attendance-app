@@ -100,6 +100,9 @@ class _ClockInScreenState extends State<ClockInScreen> {
               await supabase.from('kehadiran').insert({
                 'nip': nip,
                 'waktu_clockin': DateTime.now().toIso8601String(),
+                'tanggal': DateTime.now().toIso8601String().split(
+                  'T',
+                )[0], // YYYY-MM-DD
                 'status': 'in',
                 'status_presensi': 'hadir', // Default present
               });
