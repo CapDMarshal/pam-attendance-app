@@ -150,7 +150,7 @@ def main():
                 "nip": nip,
                 "nama_lengkap": name,
                 "foto_wajah": public_url,
-                # "email": email # Optional, add if column exists
+                "email": email
             }
             
             # Upsert (using NIP as conflict key)
