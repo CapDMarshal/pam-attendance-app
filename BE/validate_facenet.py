@@ -75,6 +75,12 @@ def build_training_embeddings(model):
     labels = []
     
     files = list(DATA_TRAIN.glob("*.*"))
+    # OPTIMIZATION: Use 1/10th of data
+    import random
+    random.shuffle(files)
+    files = files[:max(1, len(files)//10)]
+    logger.info(f"Subset Training Mode: Using {len(files)} images (1/10th of total)")
+    
     valid_extensions = ['.jpg', '.jpeg', '.png']
     
     for file_path in tqdm(files, desc="Processing training images"):
@@ -205,9 +211,20 @@ def run_validation():
     confidences = []
     
     test_files = list(DATA_TEST.glob("*.*"))
-    valid_extensions = ['.jpg', '.jpeg', '.png']
-    
-    start_time = time.time()
+    # OPTIMIZATION: Use 1/10th of data
+    import random
+    random.shuffle(test_files)
+    test_files = test_files[:max(1, len(test_files)//10)]
+    logger.info(f"Subset Testing Mode: Using {len(test_files)} images (1/10th of total)")
+
+    # Latency tracking
+    latencies = {
+        'detection': [],
+        'alignment': [],
+        'embedding': [],
+        'matching': [],
+        'total': []
+    }
     
     for file_path in tqdm(test_files, desc="Validating"):
         if not file_path.suffix.lower() in valid_extensions:
@@ -232,8 +249,14 @@ def run_validation():
                 confidences.append(0.0)
                 continue
             
-            # Detect face
+            # Start Total Timer
+            t_start_total = time.time()
+            
+            # 1. Detect face
+            t0 = time.time()
             faces = model.detect_faces(image)
+            t_detect = time.time() - t0
+            latencies['detection'].append(t_detect)
             
             if len(faces) == 0:
                 y_pred.append("Unknown")
@@ -246,24 +269,36 @@ def run_validation():
             
             face_box = faces[0]
             
-            # Extract face
+            # 2. Extract/Align face
+            t0 = time.time()
             face = model._extract_face(image, face_box)
+            t_align = time.time() - t0
+            latencies['alignment'].append(t_align)
             
             if face is None:
                 y_pred.append("Unknown")
                 confidences.append(0.0)
                 continue
             
-            # Get embedding
+            # 3. Get embedding
+            t0 = time.time()
             embedding = model._get_embedding(face)
+            t_embed = time.time() - t0
+            latencies['embedding'].append(t_embed)
             
-            # Find best match
+            # 4. Find best match
+            t0 = time.time()
             predicted_name, confidence = find_best_match(
                 embedding, 
                 db_embeddings, 
                 db_labels, 
                 threshold=recognition_threshold
             )
+            t_match = time.time() - t0
+            latencies['matching'].append(t_match)
+            
+            t_total = time.time() - t_start_total
+            latencies['total'].append(t_total)
             
             y_pred.append(predicted_name)
             confidences.append(confidence)
@@ -297,6 +332,22 @@ def run_validation():
     avg_confidence = np.mean(confidences)
     logger.info(f"Average Confidence: {avg_confidence:.4f}")
     
+    logger.info("-" * 30)
+    logger.info("LATENCY REPORT (per image)")
+    logger.info("-" * 30)
+    
+    avg_detect = np.mean(latencies['detection']) * 1000 if latencies['detection'] else 0
+    avg_align = np.mean(latencies['alignment']) * 1000 if latencies['alignment'] else 0
+    avg_embed = np.mean(latencies['embedding']) * 1000 if latencies['embedding'] else 0
+    avg_match = np.mean(latencies['matching']) * 1000 if latencies['matching'] else 0
+    avg_total = np.mean(latencies['total']) * 1000 if latencies['total'] else 0
+    
+    logger.info(f"Detection:   {avg_detect:.2f} ms")
+    logger.info(f"Alignment:   {avg_align:.2f} ms")
+    logger.info(f"Embedding:   {avg_embed:.2f} ms")
+    logger.info(f"Matching:    {avg_match:.2f} ms")
+    logger.info(f"Total Inference: {avg_total:.2f} ms")
+    
     logger.info("="*60)
     
     # Classification report
@@ -329,6 +380,7 @@ def run_validation():
         'f1_weighted': f1_weighted,
         'f1_macro': f1_macro,
         'avg_confidence': avg_confidence,
+        'avg_latency_ms': avg_total,
         'total_samples': len(y_true)
     }
 
