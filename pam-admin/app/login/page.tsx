@@ -4,19 +4,26 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
+import { verifyAdmin } from '@/lib/api';
+
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple authentication check
-    if (username === 'admin' && password === 'admin') {
-      localStorage.setItem('isAuthenticated', 'true');
-      router.push('/dashboard');
-    } else {
-      alert('Invalid credentials. Use admin/admin');
+    try {
+      const result = await verifyAdmin(username, password);
+      if (result.success) {
+        localStorage.setItem('isAuthenticated', 'true');
+        router.push('/dashboard');
+      } else {
+        alert(result.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error("Login error", error);
+      alert("An error occurred during login");
     }
   };
 
@@ -77,9 +84,9 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-6">
-          Default credentials: admin/admin
+          Login to Admin Dashboard
         </p>
       </div>
-    </div>
+    </div >
   );
 }

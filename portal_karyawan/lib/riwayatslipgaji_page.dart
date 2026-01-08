@@ -84,7 +84,7 @@ class _RiwayatSlipGajiPageState extends State<RiwayatSlipGajiPage> {
         // Fetch slip_gaji and nested slip_gaji_detail to calculate total
         final response = await Supabase.instance.client
             .from('slip_gaji')
-            .select('*, slip_gaji_detail(jumlah, kategori)')
+            .select('*, slip_gaji_detail(jumlah, kategori, nama_komponen)')
             .eq('nip', nip)
             .eq('tahun', int.parse(_selectedYear))
             .order('bulan', ascending: false);

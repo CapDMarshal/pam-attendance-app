@@ -117,27 +117,44 @@ class _RiwayatKehadiranPageState extends State<RiwayatKehadiranPage> {
       if (nip != null) {
         final year = int.parse(_selectedYear);
         final startOfYear = DateTime.utc(year, 1, 1);
-        final endOfYear = DateTime.utc(year, 12, 31, 23, 59, 59);
+        final endOfYear = DateTime.utc(year, 12, 31);
+        // Format: YYYY-MM-DD
+        final String startStr = DateFormat('yyyy-MM-dd').format(startOfYear);
+        final String endStr = DateFormat('yyyy-MM-dd').format(endOfYear);
 
         // Fetch all attendance for the selected year
         final response = await Supabase.instance.client
             .from('kehadiran')
-            .select('waktu_clockin, status_presensi')
+            .select('tanggal, waktu_clockin, status_presensi')
             .eq('nip', nip)
-            .gte('waktu_clockin', startOfYear.toIso8601String())
-            .lte('waktu_clockin', endOfYear.toIso8601String());
+            .gte('tanggal', startStr)
+            .lte('tanggal', endStr);
 
         // Process data locally to group by Month
         // Map<MonthInt, Map<String, int>>
         final Map<int, Map<String, int>> monthlyStats = {};
 
         for (var item in response) {
-          if (item['waktu_clockin'] != null) {
+          int? month;
+
+          if (item['tanggal'] != null) {
+            try {
+              final date = DateTime.parse(
+                item['tanggal'],
+              ); // Auto-parse YYYY-MM-DD
+              month = date.month;
+            } catch (_) {}
+          }
+
+          if (month == null && item['waktu_clockin'] != null) {
             final date = DateTime.parse(item['waktu_clockin']).toLocal();
-            final month = date.month;
+            month = date.month;
+          }
+
+          if (month != null) {
             final status =
                 item['status_presensi']?.toString().toLowerCase().trim() ??
-                'alpha'; // Default alpha if null?
+                'alpha';
 
             monthlyStats.putIfAbsent(
               month,

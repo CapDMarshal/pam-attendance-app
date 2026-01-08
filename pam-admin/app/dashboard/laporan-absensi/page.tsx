@@ -192,8 +192,8 @@ export default function LaporanAbsensiPage() {
                 onClick={handleNextMonth}
                 disabled={isCurrentMonth()}
                 className={`p-2 rounded-lg transition ${isCurrentMonth()
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:bg-gray-100'
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:bg-gray-100'
                   }`}
               >
                 <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -299,20 +299,50 @@ export default function LaporanAbsensiPage() {
                   const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
                   const dayNum = dateObj.getDate();
 
+                  // Helpers for formatting time
+                  const formatTime = (isoString?: string) => {
+                    if (!isoString) return '-';
+                    const d = new Date(isoString);
+                    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                  };
+
                   return (
                     <div key={date} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                      <div className="flex items-center space-x-4">
-                        <div className="text-center">
-                          <div className="text-xs text-gray-500">{dayName}</div>
+
+                      {/* Date & Day */}
+                      <div className="flex items-center space-x-4 w-32">
+                        <div className="text-center w-10">
+                          <div className="text-xs text-gray-500 uppercase">{dayName}</div>
                           <div className="text-lg font-bold">{dayNum}</div>
                         </div>
-                        <div className="text-sm text-gray-600">{date}</div>
+                        <div className="text-sm text-gray-600 font-medium">{date}</div>
                       </div>
 
+                      {/* Clock In / Out Info */}
+                      <div className="flex-1 flex space-x-4 justify-center">
+                        <div className="text-center">
+                          <div className="text-[10px] text-gray-400 uppercase tracking-wide">Clock In</div>
+                          <div className="text-sm font-semibold text-gray-800">{formatTime(dayData.clockIn)}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-[10px] text-gray-400 uppercase tracking-wide">Clock Out</div>
+                          <div className="text-sm font-semibold text-gray-800">{formatTime(dayData.clockOut)}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-[10px] text-gray-400 uppercase tracking-wide">Status</div>
+                          <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase ${dayData.statusKehadiran === 'in' ? 'bg-blue-100 text-blue-700' :
+                              dayData.statusKehadiran === 'out' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-400'
+                            }`}>
+                            {dayData.statusKehadiran || '-'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Status Selector */}
                       <select
                         value={dayData.status}
                         onChange={(e) => handleStatusChange(detailUserId, date, e.target.value)}
-                        className={`px-3 py-1 rounded-lg text-sm font-semibold ${getStatusBadgeColor(dayData.status)} border-0 cursor-pointer`}
+                        className={`px-3 py-1 rounded-lg text-sm font-semibold ${getStatusBadgeColor(dayData.status)} border-0 cursor-pointer focus:ring-2 focus:ring-blue-500`}
                       >
                         <option value="attend">Attend</option>
                         <option value="alpha">Alpha</option>

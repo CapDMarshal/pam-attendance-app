@@ -183,7 +183,7 @@ export default function DashboardPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {users.map((user, index) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
+                    <tr key={user.id || index} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.phone}</td>
@@ -192,13 +192,20 @@ export default function DashboardPage() {
                           onClick={() => openImageModal(user.faceImage, user.name)}
                           className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 hover:ring-2 hover:ring-blue-500 transition cursor-pointer"
                         >
-                          <Image
-                            src={`https://hypocycloidal-intensely-raven.ngrok-free.dev/${user.faceImage}`}
-                            alt={`${user.name}'s face`}
-                            width={40}
-                            height={40}
-                            className="w-full h-full object-cover"
-                          />
+                          {user.faceImage ? (
+                            <img
+                              src={user.faceImage.startsWith('http') ? user.faceImage : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/photos/${user.faceImage}`}
+                              alt={`${user.name}'s face`}
+                              className="w-full h-full object-cover"
+                              width={40}
+                              height={40}
+                              onError={(e) => { (e.target as HTMLImageElement).src = '/images/avatar-placeholder.png'; }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                              <svg className="w-6 h-6" fill="fill" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
+                            </div>
+                          )}
                         </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -399,12 +406,10 @@ export default function DashboardPage() {
                 </button>
               </div>
               <div className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                <Image
-                  src={`https://hypocycloidal-intensely-raven.ngrok-free.dev/${selectedImage.src}`}
+                <img
+                  src={selectedImage.src.startsWith('http') ? selectedImage.src : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/photos/${selectedImage.src}`}
                   alt={`${selectedImage.name}'s face`}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, 672px"
+                  className="w-full h-full object-contain"
                 />
               </div>
             </div>
