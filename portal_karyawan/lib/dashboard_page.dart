@@ -70,31 +70,15 @@ class _DashboardPageState extends State<DashboardPage> {
       final String? nip = prefs.getString('nip');
 
       if (nip != null) {
-        // Query kehadiran using nip and time range for today (Local time converted to UTC)
-        final DateTime now = DateTime.now(); // Local time
-
-        // Construct start and end of TODAY in Local time
-        final DateTime startOfDayLocal = DateTime(now.year, now.month, now.day);
-        final DateTime endOfDayLocal = DateTime(
-          now.year,
-          now.month,
-          now.day,
-          23,
-          59,
-          59,
-        );
-
-        // Convert to UTC ISO strings for Supabase query
-        final String startOfDay = startOfDayLocal.toUtc().toIso8601String();
-        final String endOfDay = endOfDayLocal.toUtc().toIso8601String();
+        final DateTime now = DateTime.now();
+        final String todayStr =
+            "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
 
         final response = await Supabase.instance.client
             .from('kehadiran')
             .select('status')
-            .eq('nip', nip) // Direct NIP query as per user request
-            .gte('waktu_clockin', startOfDay)
-            .lte('waktu_clockin', endOfDay)
-            .order('waktu_clockin', ascending: false) // Get latest status
+            .eq('nip', nip)
+            .eq('tanggal', todayStr)
             .limit(1)
             .maybeSingle();
 
@@ -141,33 +125,50 @@ class _DashboardPageState extends State<DashboardPage> {
     String subtitle;
     double iconRotation = 0;
 
-    switch (_attendanceStatus) {
-      case 'in':
-        cardColor = const Color(0xFF4CAF50); // Green
-        borderColor = const Color(0xFF2E7D32); // Darker Green
-        icon = Icons.check_circle;
-        iconColor = Colors.white;
-        title = "You are Checked in!";
-        subtitle = "Keep up the good work!";
-        break;
-      case 'out':
-        cardColor = Colors.grey.shade400; // Grey
-        borderColor = Colors.grey.shade700; // Darker Grey
-        icon = Icons
-            .logout; // Or 'door_back_door' if available, but logout is standard
-        iconColor = const Color(0xFFD32F2F); // Red
+    final now = DateTime.now();
+    final int hour = now.hour;
+
+    // Logic Priority:
+    // 1. If Checked IN, always show IN status (Green)
+    // 2. If NOT Checked IN (Out/Default):
+    //    a. Before 9 AM: "Not work time yet"
+    //    b. After 4 PM (16:00): "Done for the day"
+    //    c. Between 9 AM - 4 PM: "Check In Required"
+
+    if (_attendanceStatus == 'in') {
+      cardColor = const Color(0xFF4CAF50); // Green
+      borderColor = const Color(0xFF2E7D32); // Darker Green
+      icon = Icons.check_circle;
+      iconColor = Colors.white;
+      title = "You are Checked in!";
+      subtitle = "Keep up the good work!";
+    } else {
+      // Status is OUT or Default
+      if (hour < 9) {
+        // Before 9 AM
+        cardColor = const Color.fromARGB(255, 128, 202, 255); // Light Blue
+        borderColor = const Color(0xFF2196F3); // Blue
+        icon = Icons.access_time;
+        iconColor = const Color(0xFF1976D2);
+        title = "It's not work time yet";
+        subtitle = "Prepare for a great day ahead!";
+      } else if (hour >= 16) {
+        // After 4 PM
+        cardColor = Colors.grey.shade400;
+        borderColor = Colors.grey.shade700;
+        icon = Icons.logout;
+        iconColor = const Color(0xFFD32F2F);
         title = "Checked out";
         subtitle = "You're done for the day";
-        break;
-      default: // 'default'
-        cardColor = const Color(0xFFA8C7FA); // Light Blue
-        borderColor = const Color(0xFF4277BC); // Brand Blue
-        icon = Icons.link_off;
-        iconColor = const Color(0xFF4277BC);
-        title = "You are not checked in";
-        subtitle = "Check in before 09:00 am";
-        iconRotation = -0.5;
-        break;
+      } else {
+        // Between 9 AM and 4 PM -> Check In Required
+        cardColor = const Color.fromARGB(255, 128, 202, 255); // Light Blue
+        borderColor = const Color(0xFF2196F3); // Blue
+        icon = Icons.info_outline;
+        iconColor = const Color(0xFFEF6C00);
+        title = "Check In Required";
+        subtitle = "Please check in on the kiosk";
+      }
     }
 
     return Container(
