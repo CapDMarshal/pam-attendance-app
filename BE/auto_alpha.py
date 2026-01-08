@@ -57,14 +57,40 @@ def main():
                 "status_presensi": "alpha"
             })
 
-        if insert_payload:
-            # Upsert is safer to prevent double runs
-            # Assumption: (nip, tanggal) is a Unique Constraint in Database
             res = supabase.table("kehadiran").upsert(
                 insert_payload, 
                 on_conflict="nip, tanggal" 
             ).execute()
-            print(f"💾 Successfully inserted/upserted {len(insert_payload)} Alpha records.")
+            print(f"💾 [Yesterday] Successfully inserted/upserted {len(insert_payload)} Alpha records.")
+
+        # --- NEW LOGIC: Initialize TODAY's records ---
+        today_date = datetime.now().strftime('%Y-%m-%d')
+        print(f"☀️ Initializing Attendance for Today: {today_date}")
+        
+        # Check who already has a record for today (in case script runs multiple times)
+        today_res = supabase.table("kehadiran").select("nip").eq("tanggal", today_date).execute()
+        today_present_nips = {record['nip'] for record in today_res.data}
+        
+        today_missing_nips = all_nips - today_present_nips
+        print(f"🆕 Employees needing initialization: {len(today_missing_nips)}")
+
+        if today_missing_nips:
+            today_payload = []
+            for nip in today_missing_nips:
+                today_payload.append({
+                    "nip": nip,
+                    "tanggal": today_date,
+                    # No waktu_clockin yet, they haven't clocked in
+                    "status": "out", 
+                    "status_presensi": "alpha" # Default to alpha until they clock in
+                })
+            
+            res_today = supabase.table("kehadiran").upsert(
+                today_payload,
+                on_conflict="nip, tanggal"
+            ).execute()
+            print(f"� [Today] Successfully initialized {len(today_payload)} records.")
+
 
     except Exception as e:
         print(f"🚨 Error: {e}")
