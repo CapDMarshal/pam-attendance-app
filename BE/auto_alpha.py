@@ -43,8 +43,9 @@ def main():
         print(f"❌ Absent Employees: {len(absent_nips)}")
 
         if not absent_nips:
-            print("🎉 Everyone attended! No Alpha records needed.")
-            return
+            print("🎉 Everyone attended yesterday! No Alpha records needed.")
+            # Do not return here, continue to Today's logic
+
 
         # 5. Bulk Insert Alpha Records
         insert_payload = []
